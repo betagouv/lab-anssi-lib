@@ -1,0 +1,30 @@
+{
+  "name": "@lab-anssi/lib",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/betagouv/lab-anssi-lib.git"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/betagouv/lab-anssi-lib/issues"
+  },
+  "homepage": "https://github.com/betagouv/lab-anssi-lib#readme",
+  "scripts": {
+    "build": "tsc"
+  },
+  "files": [
+    "dist"
+  ],
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
