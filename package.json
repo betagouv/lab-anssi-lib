@@ -11,7 +11,8 @@
   },
   "homepage": "https://github.com/betagouv/lab-anssi-lib#readme",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "echo 'Aucun test'"
   },
   "files": [
     "dist"
