@@ -1,6 +1,12 @@
+export type ArticleMarkdownCrisp = {
+  titre: string;
+  contenuMarkdown: string;
+  description: string;
+};
+
 export class AdaptateurCmsCrisp {
-  private urlBase: string;
-  private enteteCrisp: { [cle: string]: string };
+  readonly urlBase: string;
+  readonly enteteCrisp: { [cle: string]: string };
 
   constructor(idSite: string, cleApi: string) {
     this.urlBase = `https://api.crisp.chat/v1/website/${idSite}/`;
@@ -10,7 +16,9 @@ export class AdaptateurCmsCrisp {
     };
   }
 
-  recupereArticle = async (idArticle: string) => {
+  recupereArticle = async (
+    idArticle: string
+  ): Promise<ArticleMarkdownCrisp> => {
     const reponse = await fetch(
       `${this.urlBase}helpdesk/locale/fr/article/${idArticle}`,
       {
