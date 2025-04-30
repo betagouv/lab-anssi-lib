@@ -1,6 +1,5 @@
-// const CrispMarkdown = require('../../src/cms/crispMarkdown');
-import { describe, it } from 'node:test';
 import assert from 'assert';
+import { describe, it } from 'node:test';
 import CrispMarkdown from '../../src/cms/crispMarkdown';
 
 describe('Le convertisseur de Markdown Crisp', () => {
@@ -54,7 +53,10 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       const resultat = crispMarkdown.versHTML();
 
-      assert.equal(resultat, "<h2 id='un-titre'>Un titre</h2>");
+      assert.equal(
+        resultat,
+        "<section><h2 id='un-titre'>Un titre</h2></section>"
+      );
     });
 
     it('contrains les niveaux de hierarchie entre 2 et 4', () => {
@@ -65,7 +67,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       assert.equal(
         resultat,
-        "<h2 id='un-titre'>Un titre</h2><h4 id='un-autre-titre'>Un autre titre</h4>"
+        "<section><h2 id='un-titre'>Un titre</h2><h4 id='un-autre-titre'>Un autre titre</h4></section>"
       );
     });
 
@@ -75,7 +77,10 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       const resultat = crispMarkdown.versHTML();
 
-      assert.equal(resultat, "<h2 id='un-titre'>Un titre</h2>");
+      assert.equal(
+        resultat,
+        "<section><h2 id='un-titre'>Un titre</h2></section>"
+      );
     });
   });
 
@@ -124,6 +129,20 @@ describe('Le convertisseur de Markdown Crisp', () => {
           id: 'un-sous-titre',
         },
       ]);
+    });
+  });
+
+  describe('concernant les sections', () => {
+    it('ajoute une section pour chaque titre', () => {
+      const entree = '# Un titre\ncontenu de la section';
+      const crispMarkdown = new CrispMarkdown(entree);
+
+      const resultat = crispMarkdown.versHTML();
+
+      assert.equal(
+        resultat,
+        "<section><h2 id='un-titre'>Un titre</h2><p>contenu de la section</p>\n</section>"
+      );
     });
   });
 });
