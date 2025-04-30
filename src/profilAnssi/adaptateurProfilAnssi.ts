@@ -1,5 +1,6 @@
 import {decode} from "html-entities";
 import {decoupeTableau} from "../services/serviceMiseEnForme";
+import axios from "axios";
 
 type Profil = {
     nom: string,
@@ -9,61 +10,43 @@ type Profil = {
     telephone?: string,
     domainesSpecialite: string[]
 }
-
 type ProfilsAInscrire = (Profil & { dateInscription: Date })[]
 
-class ErreurFetch extends Error {
-    status: number;
-
-    constructor(message: string, status: number) {
-        super(message);
-        this.status = status;
-    }
-}
-
 export class AdaptateurProfilAnssi {
-    readonly entete: { [cle: string]: string };
+    readonly entete: { headers: { [cle: string]: string } };
 
     constructor(private urlBase: string, cleApi: string) {
         this.entete = {
-            Authorization: `Bearer ${cleApi}`
+            headers: {
+                Authorization: `Bearer ${cleApi}`
+            }
         };
     }
 
     async metsAJour({nom, prenom, email, entite, telephone, domainesSpecialite}: Profil) {
         const urlProfil = `${this.urlBase}/profil/${email}`;
-        await fetch(
+        await axios.put(
             urlProfil,
             {
-                method: 'PUT',
-                headers: this.entete,
-                body: JSON.stringify({
-                    nom: decode(nom),
-                    prenom: decode(prenom),
-                    entite,
-                    telephone,
-                    domainesSpecialite,
-                })
-            }
+                nom: decode(nom),
+                prenom: decode(prenom),
+                entite,
+                telephone,
+                domainesSpecialite,
+            },
+            this.entete
         );
     };
 
     async recupere(email: string) {
         const urlProfil = `${this.urlBase}/profil/${email}`;
         try {
-            const reponse = await fetch(urlProfil, {
-                method: 'GET',
-                headers: this.entete,
-            });
-            if (!reponse.ok) {
-                throw new ErreurFetch(await reponse.json(),reponse.status);
-            }
-            return await reponse.json();
+            const reponse = await axios.get(urlProfil, this.entete);
+            return reponse.data;
         } catch (e) {
-            if(e instanceof ErreurFetch) {
-                if(e.status === 404) return undefined;
-                throw e;
-            }
+            if (axios.isAxiosError(e) && e?.response?.status === 404)
+                return undefined;
+            throw e;
         }
     };
 
@@ -71,13 +54,10 @@ export class AdaptateurProfilAnssi {
         const urlInscriptions = `${this.urlBase}/inscriptions`;
         const profilsParTrancheDe500 = decoupeTableau(profils, 500);
 
-        const promesses = profilsParTrancheDe500.map(profils => fetch(
+        const promesses = profilsParTrancheDe500.map(profils => axios.post(
             urlInscriptions,
-            {
-                method: 'POST',
-                headers: this.entete,
-                body: JSON.stringify(profils)
-            }
+            profils,
+            this.entete
         ));
 
         await Promise.all(promesses);
