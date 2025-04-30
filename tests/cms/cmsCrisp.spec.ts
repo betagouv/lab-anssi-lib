@@ -30,7 +30,7 @@ describe('Le CMS Crisp', () => {
       `https://api.crisp.chat/v1/website/id-site/`
     );
     assert.equal(
-      adaptateurCmsCrisp.enteteCrisp['Authorization'],
+      adaptateurCmsCrisp.enteteCrisp.headers['Authorization'],
       'Basic Y2xlLWFwaQ=='
     );
   });
@@ -41,7 +41,7 @@ describe('Le CMS Crisp', () => {
       cmsCrisp = new CmsCrisp('id-site', 'cle-api');
       cmsCrisp.adaptateurCmsCrisp = {
         urlBase: '',
-        enteteCrisp: {},
+        enteteCrisp: { headers: {}},
         recupereArticle: async (_: string) => donneesParDefautAdaptateur,
       };
     });
