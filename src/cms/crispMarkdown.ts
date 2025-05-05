@@ -131,7 +131,8 @@ class CrispMarkdown {
   }
 
   parseLeMarkdown() {
-    this.contenuHTML = this.marked.parse(this.contenuMarkdown) as string;
+    const avecCorrectionLigneHorizontale = this.contenuMarkdown.replaceAll("\n---", "\n\n---");
+    this.contenuHTML = this.marked.parse(avecCorrectionLigneHorizontale) as string;
     this.aDejaParse = true;
   }
 

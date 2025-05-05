@@ -46,6 +46,20 @@ describe('Le convertisseur de Markdown Crisp', () => {
     );
   });
 
+  it("reste robuste lorsqu'une image est suivie d'une ligne horizontale", () => {
+    const entree = '![](https://uneUrl.com)\n---\n';
+    const crispMarkdown = new CrispMarkdown(entree);
+
+    const resultat = crispMarkdown.versHTML();
+
+    assert.equal(
+        resultat,
+        '<p><img src="https://uneUrl.com" alt=""></p>\n' +
+        '<hr>\n'
+    );
+
+  });
+
   describe('concernant les titres', () => {
     it("diminue d'un niveau la hierarchie des titres afin de réserver le h1 pour le titre de la page", () => {
       const entree = '# Un titre';
