@@ -10,7 +10,7 @@ type Profil = {
     telephone?: string,
     domainesSpecialite: string[]
 }
-type ProfilsAInscrire = (Profil & { dateInscription: Date })[]
+type ProfilsAInscrire = { dateInscription: Date, donneesProfil: Profil }[]
 
 export class AdaptateurProfilAnssi {
     readonly entete: { headers: { [cle: string]: string } };
