@@ -41,8 +41,9 @@ describe('Le CMS Crisp', () => {
       cmsCrisp = new CmsCrisp('id-site', 'cle-api');
       cmsCrisp.adaptateurCmsCrisp = {
         urlBase: '',
-        enteteCrisp: { headers: {}},
+        enteteCrisp: { headers: {} },
         recupereArticle: async (_: string) => donneesParDefautAdaptateur,
+        recupereArticlesCategorie: async (_: string) => [],
       };
     });
 
