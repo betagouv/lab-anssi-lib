@@ -38,6 +38,18 @@ type ResumesArticlesAPI = {
   }[];
 };
 
+export type SectionCrisp = {
+  id: string;
+  nom: string;
+};
+
+type SectionsAPI = {
+  data: {
+    section_id: string;
+    name: string;
+  }[];
+};
+
 export class AdaptateurCmsCrisp {
   readonly urlBase: string;
   readonly enteteCrisp: { headers: { [cle: string]: string } };
@@ -101,5 +113,19 @@ export class AdaptateurCmsCrisp {
     }
 
     return donnees;
+  };
+
+  recupereSectionsCategorie = async (
+    idCategorie: string
+  ): Promise<SectionCrisp[]> => {
+    const reponse = await axios.get<SectionsAPI>(
+      `${this.urlBase}helpdesk/locale/fr/category/${idCategorie}/sections/0`,
+      this.enteteCrisp
+    );
+
+    return reponse.data.data.map((section) => ({
+      id: section.section_id,
+      nom: section.name,
+    }));
   };
 }

@@ -139,4 +139,34 @@ describe("L'adaptateur CMS Crisp", () => {
       assert.equal(reponse.length, 2);
     });
   });
+
+  describe("sur récupération de toutes les sections d'une catégorie", () => {
+    beforeEach(() => {
+      mockAxiosGet.mock.mockImplementationOnce(async () => ({
+        data: { data: [{ section_id: 'ID_SECTION', name: 'NOM_SECTION' }] },
+      }));
+    });
+
+    it("utilise l'identifiant de la catégorie pour la requête des sections", async () => {
+      const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
+
+      await adaptateurCmsCrisp.recupereSectionsCategorie('ID_CATEGORIE');
+
+      const urlUtilisee = mockAxiosGet.mock.calls[0].arguments[0];
+      assert.strictEqual(
+        urlUtilisee,
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/locale/fr/category/ID_CATEGORIE/sections/0'
+      );
+    });
+
+    it('retourne les sections', async () => {
+      const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
+
+      const reponse =
+        await adaptateurCmsCrisp.recupereSectionsCategorie('ID_CATEGORIE');
+
+      assert.equal(reponse[0].id, 'ID_SECTION');
+      assert.equal(reponse[0].nom, 'NOM_SECTION');
+    });
+  });
 });
