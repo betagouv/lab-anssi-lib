@@ -44,6 +44,7 @@ describe('Le CMS Crisp', () => {
         enteteCrisp: { headers: {} },
         recupereArticle: async (_: string) => donneesParDefautAdaptateur,
         recupereArticlesCategorie: async (_: string) => [],
+        recupereSectionsCategorie: async (_: string) => [],
       };
     });
 
