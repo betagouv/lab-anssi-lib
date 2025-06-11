@@ -1,4 +1,5 @@
 import { Lexer, Marked, Parser, RendererObject, Tokens } from 'marked';
+import { EntreeTableDesMatieres } from './types';
 
 const extensionBoite = (regex: RegExp, nom: string, classe: string) => ({
   name: nom,
@@ -30,7 +31,7 @@ const extensionBoite = (regex: RegExp, nom: string, classe: string) => ({
 class CrispMarkdown {
   private contenuHTML: string | null = null;
   private aDejaParse: boolean = false;
-  private tdm: any[] = [];
+  private tdm: EntreeTableDesMatieres[] = [];
   private marked: Marked;
 
   constructor(private contenuMarkdown: string) {

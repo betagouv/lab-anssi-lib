@@ -1,29 +1,10 @@
 import {
   AdaptateurCmsCrisp,
   ResumeArticleCrisp,
-  SectionCrisp,
 } from './adaptateurCmsCrisp';
 import CrispMarkdown from './crispMarkdown';
 import { ErreurArticleCrispIntrouvable } from '../erreurs';
-
-export type PageHtmlCrisp = {
-  titre: string;
-  contenu: string | null;
-  description: string;
-  tableDesMatieres: any[];
-};
-
-type ArticleMarkdownCrispAvecSection = {
-  titre: string;
-  contenuMarkdown: string;
-  description: string;
-  section: {
-    id?: string;
-    nom?: string;
-  };
-};
-
-type ResumeArticleCrispAvecSlug = ResumeArticleCrisp & { slug: string | null };
+import { ArticleCrispAvecSection, PageHtmlCrisp, ResumeArticleCrispAvecSlug, SectionCrisp } from './types';
 
 export class CmsCrisp {
   adaptateurCmsCrisp: AdaptateurCmsCrisp;
@@ -50,16 +31,14 @@ export class CmsCrisp {
   async recupereArticleCategorie(
     slug: string,
     idCategorie: string
-  ): Promise<ArticleMarkdownCrispAvecSection> {
+  ): Promise<ArticleCrispAvecSection> {
     const articles =
       await this.adaptateurCmsCrisp.recupereArticlesCategorie(idCategorie);
     const article = articles.find((a) => this.extraitSlugArticle(a) === slug);
     if (!article) {
       throw new ErreurArticleCrispIntrouvable();
     }
-    const articleCrisp = await this.adaptateurCmsCrisp.recupereArticle(
-      article.id
-    );
+    const articleCrisp = await this.recupereArticle(article.id);
     return {
       ...articleCrisp,
       section: { id: article.section.id, nom: article.section.nom },

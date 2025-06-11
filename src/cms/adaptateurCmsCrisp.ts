@@ -1,4 +1,5 @@
 import axios, { HttpStatusCode } from 'axios';
+import { SectionCrisp } from './types';
 
 export type ArticleMarkdownCrisp = {
   titre: string;
@@ -36,11 +37,6 @@ type ResumesArticlesAPI = {
       };
     };
   }[];
-};
-
-export type SectionCrisp = {
-  id: string;
-  nom: string;
 };
 
 type SectionsAPI = {
