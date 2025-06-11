@@ -1,6 +1,6 @@
 {
   "name": "@lab-anssi/lib",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/betagouv/lab-anssi-lib.git"
