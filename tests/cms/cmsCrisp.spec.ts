@@ -169,10 +169,9 @@ describe('Le CMS Crisp', () => {
 
     it("retourne tout le contenu de l'article, en ajoutant les données de section", async () => {
       cmsCrisp.adaptateurCmsCrisp.recupereArticle = async () => ({
-        contenuMarkdown: 'Un contenu',
+        contenuMarkdown: '# Un contenu',
         titre: 'Un titre',
         description: 'Une description',
-        tableDesMatieres: ['1', '2'],
       });
       cmsCrisp.adaptateurCmsCrisp.recupereArticlesCategorie = async () => [
         {
@@ -193,9 +192,11 @@ describe('Le CMS Crisp', () => {
 
       assert.deepEqual(resultat, {
         titre: 'Un titre',
-        contenuMarkdown: 'Un contenu',
+        contenu: "<section><h2 id='un-contenu'>Un contenu</h2></section>",
         description: 'Une description',
-        tableDesMatieres: ['1', '2'],
+        tableDesMatieres: [
+          { texte: 'Un contenu', id: 'un-contenu', profondeur: 2 },
+        ],
         section: {
           id: 'id_1',
           nom: 'uneSection',
