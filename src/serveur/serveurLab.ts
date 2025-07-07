@@ -2,9 +2,7 @@ import { Express, Request, Response, NextFunction } from 'express';
 import { IpDeniedError, IpFilter } from 'express-ipfilter';
 import rateLimit from 'express-rate-limit';
 
-export const creeServeurLab = (
-  config: ConfigurationServeurLab
-): Express => {
+const creeServeurLab = (config: ConfigurationServeurLab): Express => {
   const express = require('express');
   const app = express();
 
@@ -41,17 +39,59 @@ export const creeServeurLab = (
       if (err instanceof IpDeniedError) {
         res.status(403).send('Access denied');
       } else {
-        next(err)
+        next(err);
       }
     });
   }
   return app;
 };
 
-export type ConfigurationServeurLab = {
+type ConfigurationServeurLab = {
   reseau: {
     trustProxy: number | string;
     maxRequetesParMinute: number;
     ipAutorisees: string[] | false;
   };
+};
+
+const configurationServeurLabEnvironnement = (): ConfigurationServeurLab => {
+  return {
+    reseau: {
+      trustProxy: trustProxy(),
+      maxRequetesParMinute: maxRequetesParMinute(),
+      ipAutorisees:
+        process.env.SERVEUR_ADRESSES_IP_AUTORISEES?.split(',') ?? false,
+    },
+  };
+};
+
+const trustProxy = () => {
+  const trustProxyEnChaine = process.env.SERVEUR_TRUST_PROXY || '0';
+  const trustProxyEnNombre = Number(trustProxyEnChaine);
+  if (isNaN(trustProxyEnNombre)) {
+    console.warn(
+      `Attention ! SERVEUR_TRUST_PROXY positionné à ${trustProxyEnChaine}`
+    );
+    return trustProxyEnChaine;
+  } else {
+    return trustProxyEnNombre;
+  }
+};
+
+const maxRequetesParMinute = () => {
+  const maxEnChaine = process.env.SERVEUR_MAX_REQUETES_PAR_MINUTE || '600';
+  const maxEnNombre = Number(maxEnChaine);
+  if (isNaN(maxEnNombre)) {
+    throw new Error(
+      `SERVEUR_MAX_REQUETES_PAR_MINUTE n'est pas un nombre : ${maxEnChaine}`
+    );
+  } else {
+    return maxEnNombre;
+  }
+};
+
+export {
+  configurationServeurLabEnvironnement,
+  creeServeurLab,
+  ConfigurationServeurLab,
 };

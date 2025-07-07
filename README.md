@@ -29,7 +29,7 @@ app.get('/', (req, res) => {res.json({})});
 La configuration serveur peut-être construite automatiquement à partir des variables d'environnement :
 
 ```
-const config = adaptateurEnvironnementServeurLab();
+const config = configurationServeurLabEnvironnement();
 const app = creeServeurLab(config);
 app.get('/', (req, res) => {res.json({})});
 ```
