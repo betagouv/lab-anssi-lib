@@ -1,10 +1,13 @@
-import {
-  AdaptateurCmsCrisp,
-  ResumeArticleCrisp,
-} from './adaptateurCmsCrisp';
-import CrispMarkdown from './crispMarkdown';
 import { ErreurArticleCrispIntrouvable } from '../erreurs';
-import { ArticleCrispAvecSection, PageHtmlCrisp, ResumeArticleCrispAvecSlug, SectionCrisp } from './types';
+import { AdaptateurCmsCrisp, ResumeArticleCrisp } from './adaptateurCmsCrisp';
+import { fabriqueAdaptateurHttp } from './adaptateurHttp';
+import CrispMarkdown from './crispMarkdown';
+import {
+  ArticleCrispAvecSection,
+  PageHtmlCrisp,
+  ResumeArticleCrispAvecSlug,
+  SectionCrisp,
+} from './types';
 
 export class CmsCrisp {
   adaptateurCmsCrisp: AdaptateurCmsCrisp;
@@ -13,7 +16,7 @@ export class CmsCrisp {
   constructor(idSite: string, cleApi: string) {
     this.adaptateurCmsCrisp = new AdaptateurCmsCrisp(idSite, cleApi);
     this.constructeurCrispMarkdown = (contenuMarkdown: string) =>
-      new CrispMarkdown(contenuMarkdown);
+      new CrispMarkdown(contenuMarkdown, fabriqueAdaptateurHttp());
   }
 
   async recupereArticle(id: string): Promise<PageHtmlCrisp> {
@@ -22,9 +25,9 @@ export class CmsCrisp {
     let crispMarkdown = this.constructeurCrispMarkdown(contenuMarkdown);
     return {
       titre,
-      contenu: crispMarkdown.versHTML(),
+      contenu: await crispMarkdown.versHTML(),
       description,
-      tableDesMatieres: crispMarkdown.tableDesMatieres(),
+      tableDesMatieres: await crispMarkdown.tableDesMatieres(),
     };
   }
 
