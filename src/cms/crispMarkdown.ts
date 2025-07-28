@@ -1,4 +1,5 @@
 import { Lexer, Marked, Parser, RendererObject, Tokens } from 'marked';
+import { AdaptateurHttp } from './adaptateurHttp';
 import { EntreeTableDesMatieres } from './types';
 
 const extensionBoite = (regex: RegExp, nom: string, classe: string) => ({
@@ -34,7 +35,10 @@ class CrispMarkdown {
   private tdm: EntreeTableDesMatieres[] = [];
   private marked: Marked;
 
-  constructor(private contenuMarkdown: string) {
+  constructor(
+    private contenuMarkdown: string,
+    adaptateurHttp: AdaptateurHttp
+  ) {
     const boiteAide = extensionBoite(/^\|([^|\n]+)/, 'boiteAide', 'aide');
     const boiteInfo = extensionBoite(
       /^\|\|([^||\n]+)/,
@@ -68,7 +72,10 @@ class CrispMarkdown {
         return false;
       },
       renderer(token: Tokens.Generic) {
-        return `<div class='conteneur-video'><video src='${token.text}' controls></video><p class='legende'>${token.legende}</p></div>`;
+        const elementPiste = token.lienPisteSousTitres
+          ? `<track kind='captions' src='${token.lienPisteSousTitres}' srclang='fr' default />`
+          : '';
+        return `<div class='conteneur-video'><video src='${token.text}' controls>${elementPiste}</video><p class='legende'>${token.legende}</p></div>`;
       },
     };
 
@@ -126,24 +133,40 @@ class CrispMarkdown {
     });
 
     this.marked = new Marked({
+      async: true,
       renderer: moteurDeRendu(this),
       extensions: [boiteAide, boiteInfo, boiteAlerte, video, section],
-    })
+      walkTokens: async (token: Tokens.Generic) => {
+        if (token.type === 'video') {
+          const lienPisteSousTitres = token.text.replace('.mp4', '.vtt');
+          const pisteSousTitresExiste =
+            await adaptateurHttp.ressourceExiste(lienPisteSousTitres);
+          token.lienPisteSousTitres = pisteSousTitresExiste
+            ? lienPisteSousTitres
+            : undefined;
+        }
+      },
+    });
   }
 
-  parseLeMarkdown() {
-    const avecCorrectionLigneHorizontale = this.contenuMarkdown.replaceAll("\n---", "\n\n---");
-    this.contenuHTML = this.marked.parse(avecCorrectionLigneHorizontale) as string;
+  async parseLeMarkdown() {
+    const avecCorrectionLigneHorizontale = this.contenuMarkdown.replaceAll(
+      '\n---',
+      '\n\n---'
+    );
+    this.contenuHTML = (await this.marked.parse(
+      avecCorrectionLigneHorizontale
+    )) as string;
     this.aDejaParse = true;
   }
 
-  versHTML() {
-    if (!this.aDejaParse) this.parseLeMarkdown();
+  async versHTML() {
+    if (!this.aDejaParse) await this.parseLeMarkdown();
     return this.contenuHTML;
   }
 
-  tableDesMatieres() {
-    if (!this.aDejaParse) this.parseLeMarkdown();
+  async tableDesMatieres() {
+    if (!this.aDejaParse) await this.parseLeMarkdown();
     return this.tdm;
   }
 }
