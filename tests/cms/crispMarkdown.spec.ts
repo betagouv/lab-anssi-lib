@@ -53,7 +53,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
       assert.equal(
         resultat,
         "<div class='conteneur-video'>" +
-          "<video controls>" +
+          "<video controls crossorigin='anonymous'>" +
           "<source src='http://url.video.mp4' type='video/mp4' />" +
           "</video>" +
           "<p class='legende'>LEGENDE</p>" +
@@ -74,7 +74,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
       assert.equal(
         resultat,
         "<div class='conteneur-video'>" +
-          "<video controls>" +
+          "<video controls crossorigin='anonymous'>" +
           "<source src='http://url.video.mp4' type='video/mp4' />" +
           "<track kind='captions' src='http://url.video.vtt' srclang='fr' label='Français' default />" +
           '</video>' +
