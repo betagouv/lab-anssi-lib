@@ -76,7 +76,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
         "<div class='conteneur-video'>" +
           "<video controls>" +
           "<source src='http://url.video.mp4' type='video/mp4' />" +
-          "<track kind='captions' src='http://url.video.vtt' srclang='fr' default />" +
+          "<track kind='captions' src='http://url.video.vtt' srclang='fr' label='Français' default />" +
           '</video>' +
           "<p class='legende'>LEGENDE</p>" +
           '</div>'

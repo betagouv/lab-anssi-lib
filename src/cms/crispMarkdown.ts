@@ -73,7 +73,7 @@ class CrispMarkdown {
       },
       renderer(token: Tokens.Generic) {
         const elementPiste = token.lienPisteSousTitres
-          ? `<track kind='captions' src='${token.lienPisteSousTitres}' srclang='fr' default />`
+          ? `<track kind='captions' src='${token.lienPisteSousTitres}' srclang='fr' label='Français' default />`
           : '';
         return `<div class='conteneur-video'><video controls><source src='${token.text}' type='video/mp4' />${elementPiste}</video><p class='legende'>${token.legende}</p></div>`;
       },
