@@ -17,22 +17,25 @@ jobs:
       - name: Récupérer la version
         run: echo "release_version=$(npm pkg get version --json | tr -d '\"')" >> $GITHUB_ENV
 
+      - uses: pnpm/action-setup@v4
+
       - name: Installer Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 22
           registry-url: "https://registry.npmjs.org/"
+          cache: 'pnpm'
 
       - name: Installer les dépendances
-        run: npm ci
+        run: pnpm install
 
       - name: Exécuter les tests
-        run: npm run test
+        run: pnpm run test
 
       - name: Builder le package
-        run: npm run build
+        run: pnpm run build
 
       - name: Publier sur NPM
-        run: npm publish --provenance --access public
+        run: pnpm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

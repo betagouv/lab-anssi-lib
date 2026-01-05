@@ -10,6 +10,7 @@
     "url": "https://github.com/betagouv/lab-anssi-lib/issues"
   },
   "homepage": "https://github.com/betagouv/lab-anssi-lib#readme",
+  "packageManager": "pnpm@10.24.0",
   "scripts": {
     "build": "tsc",
     "test": "node --require tsx/cjs --test './tests/**/*.spec.ts'"

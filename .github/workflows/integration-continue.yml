@@ -17,16 +17,19 @@ jobs:
       - name: Cloner le dépôt Git
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - name: Utiliser la version Node.js 22
         uses: actions/setup-node@v3
         with:
           node-version: 22
+          cache: 'pnpm'
 
       - name: Installer les dépendances
-        run: npm ci
+        run: pnpm install
 
       - name: Exécuter les tests
-        run: npm run test
+        run: pnpm run test
 
       - name: Builder le package
-        run: npm run build
+        run: pnpm run build
