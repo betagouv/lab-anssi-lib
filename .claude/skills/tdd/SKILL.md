@@ -12,6 +12,30 @@ Le principe fondamental : **un seul comportement à la fois, un seul test à la 
 Chaque baby step est complet en lui-même : test rouge → code minimal → tests verts → refactor → suivant.
 On ne passe jamais à l'étape suivante sans avoir terminé et validé la précédente.
 
+## Rythme : pause et validation après chaque étape
+
+Le cycle TDD est collaboratif — l'utilisateur garde la main à chaque transition.
+Après chaque étape, Claude s'arrête et pose **une question contextuelle courte**.
+
+**Convention : si l'utilisateur répond `c`, on continue sans rien changer.**
+Toute autre réponse est traitée comme une instruction à appliquer avant de passer à la suite.
+
+### Questions à poser selon l'étape
+
+Après **🔴 Rouge** (test écrit et rouge confirmé) :
+> "Test rouge ✓ — tu veux modifier quelque chose avant que j'écrive le code ? (`c` pour continuer)"
+
+Après **🟢 Vert** (tous les tests passent) :
+> "Tests au vert ✓ — tu veux qu'on refactorise quelque chose en particulier ? (`c` pour passer au comportement suivant)"
+
+Après **🔵 Refactor** (si un refactor a été fait) :
+> "Refactor terminé ✓ — ça te convient ? (`c` pour passer au comportement suivant)"
+
+Ne jamais enchaîner deux étapes sans avoir attendu la réponse. Une réponse vide ou `c` signifie
+"validé, continue" — tout autre contenu est une instruction à intégrer.
+
+---
+
 ## Priorité à l'intention de l'utilisateur
 
 À chaque étape du cycle, **lire attentivement ce que l'utilisateur a écrit** avant d'agir.
@@ -38,7 +62,12 @@ Ne jamais démarrer un nouveau baby step si la suite de tests n'est pas entière
    sinon, identifier le **comportement suivant** le plus petit et le plus utile
 2. Écrire le test le plus simple possible qui décrit ce comportement
 3. **Lancer les tests immédiatement** — vérifier que le nouveau test échoue, et identifier pourquoi
-4. Si d'autres tests se mettent à échouer à cette étape → comprendre la cause (conflit de design, effet de bord, fixture partagée…) et corriger avant de continuer
+4. **Si le nouveau test passe immédiatement au vert → ne pas l'ajouter.** Le supprimer et s'arrêter.
+   Un test vert dès l'écriture n'a aucune valeur TDD : il ne prouve pas que le comportement testé
+   est manquant, il peut masquer une mauvaise assertion ou un test mort-né, et il pollue la suite
+   sans jamais avoir guidé le code. Reprendre depuis le début : identifier un comportement vraiment
+   absent, écrire un test qui échoue pour la bonne raison, puis seulement continuer.
+5. Si d'autres tests existants se mettent à échouer à cette étape → comprendre la cause (conflit de design, effet de bord, fixture partagée…) et corriger avant de continuer
 
 Un test = un comportement observable. Pas une méthode entière, pas un scénario complet — juste la prochaine chose la plus petite qui peut être vérifiée.
 
@@ -75,6 +104,10 @@ Ces règles ne sont pas des recommandations — elles définissent ce qu'est le 
 - **Ne jamais écrire du code de production sans avoir d'abord un test rouge** — le code sans
   test rouge n'est pas du TDD, c'est du code avec des tests ajoutés après.
 
+- **Ne jamais ajouter un test qui passe au vert immédiatement** — un test vert dès l'écriture
+  n'est pas un test TDD, c'est du bruit. Si c'est le cas, ne pas l'ajouter au projet, prendre
+  du recul, et reposer la question : quel comportement est réellement absent du code ?
+
 - **Exécuter les tests après chaque étape Rouge ET chaque étape Vert** — "ça devrait marcher"
   n'est pas suffisant. Les tests sont la seule preuve.
 
@@ -105,7 +138,7 @@ Avant de démarrer, s'assurer que la commande de test fonctionne :
 ```bash
 # Exemples selon l'environnement
 pytest         # Python
-pnpm test      # Node.js
+pnpm test      # Node.js — ne jamais utiliser npm test dans ce projet
 ```
 
 Si la commande échoue sur un projet vide → créer le premier test fictif et vérifier que
