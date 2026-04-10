@@ -46,24 +46,28 @@ Quelques principes :
 ### Structure
 
 ```
-[CATEGORIE] Verbe impératif en français décrivant ce qui change
+[CATEGORIE] Titre court et impératif
+... description complémentaire si nécessaire
 ```
 
-La catégorie est optionnelle. Quand elle est absente, le message commence directement
-par le verbe impératif.
+La première ligne est le titre : court, impératif, sans point final.
+La deuxième ligne commence par `...` et apporte du contexte (pourquoi, quoi, dans quel périmètre).
+La catégorie est optionnelle. Quand elle est absente, le titre commence directement par le verbe.
+
+La description après `...` est elle aussi optionnelle — l'omettre si le titre se suffit à lui-même.
 
 ### Exemples tirés de l'historique
 
 ```
-Ajoute une compétence TDD
-Remplace `npm` par `pnpm` comme client pour gérer les paquets
-Ajoute l'attribut crossorigin
-Exporte l'erreur d'article crisp introuvable
+[SOIN] Supprime le code mort
+... en rapport avec l'entrepôt de données
 
-[VERSION] Passe à la version 2.1.5
-[SECURITE] Mets à jour axios suite alerte dependabot
-[CORRECTION] Convertis les articles d'une catégorie en HTML
+[SECURITE] Mets à jour axios
+... suite à l'alerte dependabot https://github.com/betagouv/lab-anssi-lib/security/dependabot/13
+
 [CI] Fait passer les tests sur toutes les versions de Node
+
+Ajoute l'attribut crossorigin
 ```
 
 ### Catégories connues
