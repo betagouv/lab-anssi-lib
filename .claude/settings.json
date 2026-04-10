@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Write|Edit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import sys,json,re; d=json.load(sys.stdin); t=d.get('tool_name',''); i=d.get('tool_input',{}); pattern=re.compile(r'^\\.env(?!\\.example|\\.sample|\\.template)'); blocked=(t in ('Read','Write','Edit') and pattern.match(i.get('file_path','').replace('\\\\\\\\','/').split('/')[-1])) or (t=='Bash' and re.search(r'(?:^|[\\s/])(\\.env)(?!\\.example|\\.sample|\\.template)',i.get('command',''))); sys.stderr.write('Acces au .env interdit dans ce projet\\n') or sys.exit(2) if blocked else sys.exit(0)\""
+          }
+        ]
+      }
+    ]
+  }
+}
