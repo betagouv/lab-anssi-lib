@@ -2,3 +2,6 @@
 
 minimumReleaseAge: 10080 # 7 jours (exprimé en minutes)
 preferFrozenLockfile: true
+
+minimumReleaseAgeExclude:
+  - axios@1.15.0
