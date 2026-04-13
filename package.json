@@ -44,7 +44,7 @@
   "dependencies": {
     "express-ipfilter": "~1.4.0",
     "express-rate-limit": "~7.5.1",
-    "axios": "~1.13.5",
+    "axios": "~1.15.0",
     "html-entities": "~2.6.0",
     "marked": "~13.0.3"
   },
