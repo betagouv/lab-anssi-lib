@@ -16,19 +16,17 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Récupérer la version
-        run: echo "release_version=$(npm pkg get version --json | tr -d '\"')" >> $GITHUB_ENV
-
-      - uses: pnpm/action-setup@v6
+        run: echo "release_version=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
 
       - name: Installer Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           registry-url: "https://registry.npmjs.org/"
           package-manager-cache: false
 
       - name: Installer les dépendances
-        run: pnpm install
+        run: npm install -g "$(jq -r '.packageManager' package.json)" && pnpm install
 
       - name: Exécuter les tests
         run: pnpm run test
