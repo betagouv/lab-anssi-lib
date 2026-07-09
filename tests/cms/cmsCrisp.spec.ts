@@ -65,6 +65,21 @@ describe('Le CMS Crisp', () => {
       assert.equal(article.description, 'description');
     });
 
+    it('transmet les dates de publication et de mise à jour', async () => {
+      cmsCrisp.adaptateurCmsCrisp.recupereArticle = async () => ({
+        contenuMarkdown: '',
+        titre: 'titre',
+        description: 'description',
+        datePublication: '2024-01-01T00:00:00.000Z',
+        dateMiseAJour: '2024-02-01T00:00:00.000Z',
+      });
+
+      const article = await cmsCrisp.recupereArticle('23');
+
+      assert.equal(article.datePublication, '2024-01-01T00:00:00.000Z');
+      assert.equal(article.dateMiseAJour, '2024-02-01T00:00:00.000Z');
+    });
+
     it('récupère le markdown converti en html', async () => {
       cmsCrisp.constructeurCrispMarkdown = (contenuMarkdown) =>
         new MockCrispMarkdown(contenuMarkdown);
