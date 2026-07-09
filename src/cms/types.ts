@@ -11,6 +11,8 @@ export type PageHtmlCrisp = {
   contenu: string | null;
   description: string;
   tableDesMatieres: EntreeTableDesMatieres[];
+  datePublication?: string;
+  dateMiseAJour?: string;
 };
 
 export type ResumeArticleCrispAvecSlug = ResumeArticleCrisp & {
