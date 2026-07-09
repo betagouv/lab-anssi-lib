@@ -59,6 +59,65 @@ describe("L'adaptateur CMS Crisp", () => {
     });
   });
 
+  describe("sur récupération des dates d'un article", () => {
+    it('expose la date de publication (published_at) et de mise à jour (updated_at) au format ISO', async () => {
+      mockAxiosGet.mock.mockImplementationOnce(async () => ({
+        data: {
+          data: {
+            title: 'Un Titre',
+            description: 'Une description',
+            content: '# Un contenu',
+            published_at: 1704067200000,
+            updated_at: 1706745600000,
+          },
+        },
+      }));
+      const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
+
+      const reponse = await adaptateurCmsCrisp.recupereArticle('ID_ARTICLE');
+
+      assert.equal(reponse.datePublication, '2024-01-01T00:00:00.000Z');
+      assert.equal(reponse.dateMiseAJour, '2024-02-01T00:00:00.000Z');
+    });
+
+    it('retombe sur created_at quand published_at est absent', async () => {
+      mockAxiosGet.mock.mockImplementationOnce(async () => ({
+        data: {
+          data: {
+            title: 'Un Titre',
+            description: 'Une description',
+            content: '# Un contenu',
+            created_at: 1704067200000,
+            updated_at: 1706745600000,
+          },
+        },
+      }));
+      const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
+
+      const reponse = await adaptateurCmsCrisp.recupereArticle('ID_ARTICLE');
+
+      assert.equal(reponse.datePublication, '2024-01-01T00:00:00.000Z');
+    });
+
+    it('ne définit aucune date quand Crisp n’en fournit pas', async () => {
+      mockAxiosGet.mock.mockImplementationOnce(async () => ({
+        data: {
+          data: {
+            title: 'Un Titre',
+            description: 'Une description',
+            content: '# Un contenu',
+          },
+        },
+      }));
+      const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
+
+      const reponse = await adaptateurCmsCrisp.recupereArticle('ID_ARTICLE');
+
+      assert.equal(reponse.datePublication, undefined);
+      assert.equal(reponse.dateMiseAJour, undefined);
+    });
+  });
+
   describe("sur récupération de tous les articles d'une catégorie", () => {
     let reponseAxios = {
       data: [
