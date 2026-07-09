@@ -3,14 +3,16 @@ import { CmsCrisp } from '../../src/cms/cmsCrisp';
 import assert from 'assert';
 import CrispMarkdown from '../../src/cms/crispMarkdown';
 import { ErreurArticleCrispIntrouvable } from '../../src/erreurs';
+import { EntreeTableDesMatieres } from '../../src';
 
 class MockCrispMarkdown extends CrispMarkdown {
   constructor(private contenu: string) {
-    super(contenu);
+    super(contenu, { ressourceExiste: async () => true });
   }
 
-  versHTML = () => this.contenu + '-en-html';
-  tableDesMatieres = () => this.contenu.split(';');
+  versHTML = async () => this.contenu + '-en-html';
+  tableDesMatieres = async () =>
+    this.contenu.split(';') as unknown as EntreeTableDesMatieres[];
 }
 
 describe('Le CMS Crisp', () => {
