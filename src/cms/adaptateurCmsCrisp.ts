@@ -5,6 +5,8 @@ export type ArticleMarkdownCrisp = {
   titre: string;
   contenuMarkdown: string;
   description: string;
+  datePublication?: string;
+  dateMiseAJour?: string;
 };
 
 type ArticleMarkdownAPI = {
@@ -12,8 +14,16 @@ type ArticleMarkdownAPI = {
     content: string;
     title: string;
     description: string;
+    created_at?: number;
+    updated_at?: number;
+    published_at?: number;
   };
 };
+
+const enISO = (epochMillisecondes?: number): string | undefined =>
+  epochMillisecondes
+    ? new Date(epochMillisecondes).toISOString()
+    : undefined;
 
 export type ResumeArticleCrisp = {
   id: string;
@@ -68,10 +78,16 @@ export class AdaptateurCmsCrisp {
       this.enteteCrisp
     );
     const donnees = reponse.data;
+    const datePublication = enISO(
+      donnees.data.published_at ?? donnees.data.created_at
+    );
+    const dateMiseAJour = enISO(donnees.data.updated_at);
     return {
       contenuMarkdown: donnees.data.content,
       titre: donnees.data.title,
       description: donnees.data.description,
+      ...(datePublication ? { datePublication } : {}),
+      ...(dateMiseAJour ? { dateMiseAJour } : {}),
     };
   };
 
