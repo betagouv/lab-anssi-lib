@@ -1,6 +1,26 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
+  "onboarding": true,
+  "enabledManagers": ["github-actions", "npm", "nvm"],
+  "dependencyDashboard": true,
+  "useBaseBranchConfig": "merge",
+  "commitMessagePrefix": "[RENOVATE]",
+  "prHourlyLimit": 10,
+  "prConcurrentLimit": 2,
+  "platform": "github",
+  "repositories": ["betagouv/lab-anssi-lib"],
+  "packageRules": [
+    {
+      "description": "lockFileMaintenance",
+      "matchUpdateTypes": [
+        "pin",
+        "digest",
+        "patch",
+        "minor",
+        "major",
+        "lockFileMaintenance"
+      ],
+      "minimumReleaseAge": "7 days"
+    }
   ]
 }
