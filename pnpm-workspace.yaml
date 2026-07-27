@@ -2,3 +2,6 @@
 
 minimumReleaseAge: 10080 # 7 jours (exprimé en minutes)
 preferFrozenLockfile: true
+minimumReleaseAgeExclude:
+  # Renovate security update: qs@6.15.3
+  - qs@6.15.3
