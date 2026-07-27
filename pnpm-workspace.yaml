@@ -2,7 +2,3 @@
 
 minimumReleaseAge: 10080 # 7 jours (exprimé en minutes)
 preferFrozenLockfile: true
-
-minimumReleaseAgeExclude:
-  # Renovate security update: axios@1.18.0
-  - axios@1.15.0 || 1.18.0
