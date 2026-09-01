@@ -21,8 +21,8 @@ importers:
         specifier: ~1.4.0
         version: 1.4.0
       express-rate-limit:
-        specifier: ~7.5.1
-        version: 7.5.1(express@5.2.1)
+        specifier: ~8.6.0
+        version: 8.6.2(express@5.2.1)
       html-entities:
         specifier: ~2.6.0
         version: 2.6.0
@@ -387,8 +387,8 @@ packages:
     resolution: {integrity: sha512-Q6+ufo30/gLk7DTe3HEPTkx1LGNyWAt8I5wN8w3W4OIhhzoyNokBp5U4SSjFFcyVZ4USYvMeFNs49v4gBV9U/A==}
     engines: {node: '>=8.9.0'}
 
-  express-rate-limit@7.5.1:
-    resolution: {integrity: sha512-7iN8iPMDzOMHPUYllBEsQdWVB6fPDMPqwjBaFrgr4Jgr/+okjvzAy+UHlYYL/Vs0OsOrMkwS6PJDkFlJwoxUnw==}
+  express-rate-limit@8.6.2:
+    resolution: {integrity: sha512-YH4ru+eOJxQABscKFfRCy9R7x9QFGdezclVMwwgFFndzS2Xnm0uo6B0ABZsLhcpeptGv2qvuJVWlQr9gQZoC3A==}
     engines: {node: '>= 16'}
     peerDependencies:
       express: '>= 4.11'
@@ -493,6 +493,10 @@ packages:
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
+
+  ip-address@10.5.0:
+    resolution: {integrity: sha512-R5SnVLJmgYYvf2F2ZgwSBnelz5G4q5AxIC277GDfUaNbrZKNANcBC7RHqYYePlszf4kBolVkJauG0ZjHHFh55g==}
+    engines: {node: '>= 12'}
 
   ip6@0.2.11:
     resolution: {integrity: sha512-OmTP7FyIp+ZoNvZ7Xr97bWrCgypa3BeuYuRFNTOPT8Y11cxMW1pW1VC70kHZP1onSHHMotADcjdg5QyECiIMUw==}
@@ -977,9 +981,13 @@ snapshots:
       proxy-addr: 2.0.7
       range_check: 2.0.4
 
-  express-rate-limit@7.5.1(express@5.2.1):
+  express-rate-limit@8.6.2(express@5.2.1):
     dependencies:
+      debug: 4.4.3
       express: 5.2.1
+      ip-address: 10.5.0
+    transitivePeerDependencies:
+      - supports-color
 
   express@5.2.1:
     dependencies:
@@ -1128,6 +1136,8 @@ snapshots:
       safer-buffer: 2.1.2
 
   inherits@2.0.4: {}
+
+  ip-address@10.5.0: {}
 
   ip6@0.2.11: {}
 
