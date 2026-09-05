@@ -21,8 +21,8 @@ importers:
         specifier: ~1.4.0
         version: 1.4.0
       express-rate-limit:
-        specifier: ~8.6.0
-        version: 8.6.2(express@5.2.1)
+        specifier: ~8.7.0
+        version: 8.7.0(express@5.2.1)
       html-entities:
         specifier: ~2.6.0
         version: 2.6.0
@@ -387,8 +387,8 @@ packages:
     resolution: {integrity: sha512-Q6+ufo30/gLk7DTe3HEPTkx1LGNyWAt8I5wN8w3W4OIhhzoyNokBp5U4SSjFFcyVZ4USYvMeFNs49v4gBV9U/A==}
     engines: {node: '>=8.9.0'}
 
-  express-rate-limit@8.6.2:
-    resolution: {integrity: sha512-YH4ru+eOJxQABscKFfRCy9R7x9QFGdezclVMwwgFFndzS2Xnm0uo6B0ABZsLhcpeptGv2qvuJVWlQr9gQZoC3A==}
+  express-rate-limit@8.7.0:
+    resolution: {integrity: sha512-hOwV7WOxXfjRpAM1DSJWZDXx3GhplwD8IfwuwvogD8i1Qnkgosw/H45s4ZnFAUHDAhPjlY9hLBvJhKmGMyY26g==}
     engines: {node: '>= 16'}
     peerDependencies:
       express: '>= 4.11'
@@ -967,7 +967,7 @@ snapshots:
       proxy-addr: 2.0.7
       range_check: 2.0.4
 
-  express-rate-limit@8.6.2(express@5.2.1):
+  express-rate-limit@8.7.0(express@5.2.1):
     dependencies:
       debug: 4.4.3
       express: 5.2.1
