@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, it, Mock, mock } from 'node:test';
 import assert from 'assert';
-import { AdaptateurCmsCrisp } from '../../src/cms/adaptateurCmsCrisp';
+import {
+  AdaptateurCmsCrisp,
+  ResumesArticlesAPI,
+} from '../../src/cms/adaptateurCmsCrisp';
 import axios, { HttpStatusCode } from 'axios';
 
 describe("L'adaptateur CMS Crisp", () => {
@@ -119,7 +122,7 @@ describe("L'adaptateur CMS Crisp", () => {
   });
 
   describe("sur récupération de tous les articles d'une catégorie", () => {
-    let reponseAxios = {
+    let reponseAxios: ResumesArticlesAPI = {
       data: [
         {
           article_id: 'ID_ARTICLE',
@@ -128,6 +131,8 @@ describe("L'adaptateur CMS Crisp", () => {
           category: {
             section: { section_id: 'ID_SECTION', name: 'NOM_SECTION' },
           },
+          status: 'published',
+          updated_at: 1706745600000,
         },
       ],
     };
@@ -156,6 +161,9 @@ describe("L'adaptateur CMS Crisp", () => {
       const reponse =
         await adaptateurCmsCrisp.recupereArticlesCategorie('ID_CATEGORIE');
 
+      assert.equal(reponse[0].estPublie, true);
+      assert.equal(reponse[0].dateMiseAJour, '2024-02-01T00:00:00.000Z');
+      assert.equal(reponse[0].id, 'ID_ARTICLE');
       assert.equal(reponse[0].id, 'ID_ARTICLE');
       assert.equal(reponse[0].url, 'URL_ARTICLE');
       assert.equal(reponse[0].titre, 'TITRE_ARTICLE');

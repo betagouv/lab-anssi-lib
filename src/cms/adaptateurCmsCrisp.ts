@@ -21,31 +21,33 @@ type ArticleMarkdownAPI = {
 };
 
 const enISO = (epochMillisecondes?: number): string | undefined =>
-  epochMillisecondes
-    ? new Date(epochMillisecondes).toISOString()
-    : undefined;
+  epochMillisecondes ? new Date(epochMillisecondes).toISOString() : undefined;
 
 export type ResumeArticleCrisp = {
+  dateMiseAJour?: string;
+  estPublie: boolean;
   id: string;
-  url: string;
-  titre: string;
   section: {
     id?: string;
     nom?: string;
   };
+  titre: string;
+  url: string;
 };
 
-type ResumesArticlesAPI = {
+export type ResumesArticlesAPI = {
   data: {
     article_id: string;
-    url: string;
-    title: string;
     category?: {
       section?: {
         section_id: string;
         name: string;
       };
     };
+    status?: 'published';
+    title: string;
+    updated_at?: number;
+    url: string;
   }[];
 };
 
@@ -109,15 +111,20 @@ export class AdaptateurCmsCrisp {
 
       donnees = [
         ...donnees,
-        ...reponse.data.data.map((a) => ({
-          id: a.article_id,
-          url: a.url,
-          titre: a.title,
-          section: {
-            id: a.category?.section?.section_id,
-            nom: a.category?.section?.name,
-          },
-        })),
+        ...reponse.data.data.map((a) => {
+          const dateMiseAJour = enISO(a.updated_at);
+          return {
+            ...(dateMiseAJour ? { dateMiseAJour } : {}),
+            estPublie: a.status === 'published',
+            id: a.article_id,
+            url: a.url,
+            titre: a.title,
+            section: {
+              id: a.category?.section?.section_id,
+              nom: a.category?.section?.name,
+            },
+          };
+        }),
       ];
 
       if (reponse.status !== HttpStatusCode.PartialContent) termine = true;
