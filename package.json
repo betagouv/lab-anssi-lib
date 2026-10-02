@@ -29,7 +29,7 @@
   },
   "pnpm": {
     "overrides": {
-      "qs": "~6.15.0"
+      "qs": "~6.16.0"
     }
   },
   "devDependencies": {
