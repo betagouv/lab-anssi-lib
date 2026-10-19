@@ -66,11 +66,13 @@ describe('Le serveur', () => {
       assert.equal(response.status, 429);
     });
 
-    it("mais pas lorsque les requêtes viennent d'utilisateurs différents", async () => {
-      await request(app).get('/').set('X-Forwarded-For', `${ipClient}`);
+    it("mais pas lorsque les requêtes Forwarded viennent d'utilisateurs différents", async () => {
+      await request(app)
+        .get('/')
+        .set('Forwarded', `for=${ipClient};proto=https`);
       const response = await request(app)
         .get('/')
-        .set('X-Forwarded-For', `${ipAutreClient}`);
+        .set('Forwarded', `for=${ipAutreClient};proto=https`);
 
       assert.equal(response.status, 200);
     });

@@ -1,14 +1,18 @@
 import { Express, Request, Response, NextFunction } from 'express';
 import { IpDeniedError, IpFilter } from 'express-ipfilter';
 import rateLimit from 'express-rate-limit';
+import { fabriqueCleRateLimit } from './clefRateLimit';
 
 const creeServeurLab = (config: ConfigurationServeurLab): Express => {
   const express = require('express');
   const app = express();
+  const nombreProxiesDeConfiance =
+    typeof config.reseau.trustProxy === 'number' ? config.reseau.trustProxy : 0;
 
   const limiteRequetesParMinute = rateLimit({
     windowMs: 60 * 1000,
     limit: config.reseau.maxRequetesParMinute,
+    keyGenerator: fabriqueCleRateLimit(nombreProxiesDeConfiance),
   });
   app.set('trust proxy', config.reseau.trustProxy);
   app.use(limiteRequetesParMinute);
