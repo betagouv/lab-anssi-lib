@@ -5,27 +5,10 @@ export type ArticleMarkdownCrisp = {
   titre: string;
   contenuMarkdown: string;
   description: string;
-  datePublication?: string;
-  dateMiseAJour?: string;
 };
-
-type ArticleMarkdownAPI = {
-  data: {
-    content: string;
-    title: string;
-    description: string;
-    created_at?: number;
-    updated_at?: number;
-    published_at?: number;
-  };
-};
-
-const enISO = (epochMillisecondes?: number): string | undefined =>
-  epochMillisecondes ? new Date(epochMillisecondes).toISOString() : undefined;
 
 export type ResumeArticleCrisp = {
   chemin: string;
-  estPublie: boolean;
   slug: string;
   titre: string;
   section?: {
@@ -42,13 +25,6 @@ export type ResumesArticlesAPI = {
     state: {
       published: boolean;
     };
-  }[];
-};
-
-type SectionsAPI = {
-  data: {
-    section_id: string;
-    name: string;
   }[];
 };
 
@@ -146,9 +122,8 @@ export class AdaptateurCmsCrisp {
       donnees = [
         ...donnees,
         ...reponse.data.data
-          .filter((entité) => entité.type === 'file')
+          .filter((entite) => entite.type === 'file' && entite.state.published)
           .map((a) => ({
-            estPublie: a.state.published,
             slug: a.slug,
             titre: a.title,
             section,
