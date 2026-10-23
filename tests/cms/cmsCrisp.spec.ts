@@ -65,21 +65,6 @@ describe('Le CMS Crisp', () => {
       assert.equal(article.description, 'description');
     });
 
-    it('transmet les dates de publication et de mise à jour', async () => {
-      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async () => ({
-        contenuMarkdown: '',
-        titre: 'titre',
-        description: 'description',
-        datePublication: '2024-01-01T00:00:00.000Z',
-        dateMiseAJour: '2024-02-01T00:00:00.000Z',
-      });
-
-      const article = await cmsCrisp.recupereArticle('23');
-
-      assert.equal(article.datePublication, '2024-01-01T00:00:00.000Z');
-      assert.equal(article.dateMiseAJour, '2024-02-01T00:00:00.000Z');
-    });
-
     it('récupère le markdown converti en html', async () => {
       cmsCrisp.constructeurCrispMarkdown = (contenuMarkdown) =>
         new MockCrispMarkdown(contenuMarkdown);
@@ -133,14 +118,12 @@ describe('Le CMS Crisp', () => {
         return [
           {
             chemin: 'un-slug',
-            estPublie: true,
             slug: 'un-slug',
             titre: 'Un titre',
             section: { id: 'id_1', nom: 'uneSection' },
           },
           {
             chemin: 'un-autre-slug',
-            estPublie: true,
             slug: 'un-autre-slug',
             titre: 'Un Deuxième titre',
             section: { id: 'id_2', nom: 'uneAutreSection' },
@@ -165,7 +148,6 @@ describe('Le CMS Crisp', () => {
       cmsCrisp.adaptateurCmsCrisp.recupereArticlesParChemin = async () => [
         {
           chemin: 'un-slug',
-          estPublie: true,
           slug: 'un-slug',
           titre: 'Un Titre',
         },
@@ -189,7 +171,6 @@ describe('Le CMS Crisp', () => {
       cmsCrisp.adaptateurCmsCrisp.recupereArticlesParChemin = async () => [
         {
           chemin: 'un-slug',
-          estPublie: true,
           slug: 'un-slug',
           titre: 'Un Titre',
           section: { id: 'id_1', nom: 'uneSection' },
@@ -243,7 +224,6 @@ describe('Le CMS Crisp', () => {
           ? [
               {
                 chemin: 'un-slug',
-                estPublie: true,
                 slug: 'un-slug',
                 titre: 'unArticle',
                 section: { id: 'A', nom: 'uneSection' },
@@ -257,7 +237,6 @@ describe('Le CMS Crisp', () => {
       assert.deepEqual(articles, [
         {
           chemin: 'un-slug',
-          estPublie: true,
           slug: 'un-slug',
           titre: 'unArticle',
           section: { id: 'A', nom: 'uneSection' },

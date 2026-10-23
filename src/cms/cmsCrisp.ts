@@ -21,21 +21,13 @@ export class CmsCrisp {
 
   async recupereArticle(id: string): Promise<PageHtmlCrisp> {
     const article = await this.adaptateurCmsCrisp.recupereArticleParChemin(id);
-    const {
-      titre,
-      contenuMarkdown,
-      description,
-      datePublication,
-      dateMiseAJour,
-    } = article;
+    const { titre, contenuMarkdown, description } = article;
     let crispMarkdown = this.constructeurCrispMarkdown(contenuMarkdown);
     return {
       titre,
       contenu: await crispMarkdown.versHTML(),
       description,
       tableDesMatieres: await crispMarkdown.tableDesMatieres(),
-      ...(datePublication ? { datePublication } : {}),
-      ...(dateMiseAJour ? { dateMiseAJour } : {}),
     };
   }
 

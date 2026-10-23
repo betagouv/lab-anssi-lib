@@ -151,7 +151,6 @@ describe("L'adaptateur CMS Crisp", () => {
 
       const reponse =
         await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
-      assert.equal(reponse[0].estPublie, true);
       assert.equal(reponse[0].slug, 'SLUG_ARTICLE');
       assert.equal(reponse[0].titre, 'TITRE_ARTICLE');
       assert.equal(reponse[0].chemin, 'CHEMIN_CATEGORIE/SLUG_ARTICLE');
