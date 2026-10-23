@@ -1,10 +1,10 @@
-import { afterEach, beforeEach, describe, it, Mock, mock } from 'node:test';
 import assert from 'assert';
+import axios, { HttpStatusCode } from 'axios';
+import { afterEach, beforeEach, describe, it, Mock } from 'node:test';
 import {
   AdaptateurCmsCrisp,
   ResumesArticlesAPI,
 } from '../../src/cms/adaptateurCmsCrisp';
-import axios, { HttpStatusCode } from 'axios';
 
 describe("L'adaptateur CMS Crisp", () => {
   let mockAxiosGet: Mock<any>;
@@ -62,128 +62,104 @@ describe("L'adaptateur CMS Crisp", () => {
     });
   });
 
-  describe("sur récupération des dates d'un article", () => {
-    it('expose la date de publication (published_at) et de mise à jour (updated_at) au format ISO', async () => {
-      mockAxiosGet.mock.mockImplementationOnce(async () => ({
-        data: {
-          data: {
-            title: 'Un Titre',
-            description: 'Une description',
-            content: '# Un contenu',
-            published_at: 1704067200000,
-            updated_at: 1706745600000,
-          },
-        },
-      }));
-      const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
-
-      const reponse = await adaptateurCmsCrisp.recupereArticle('ID_ARTICLE');
-
-      assert.equal(reponse.datePublication, '2024-01-01T00:00:00.000Z');
-      assert.equal(reponse.dateMiseAJour, '2024-02-01T00:00:00.000Z');
-    });
-
-    it('retombe sur created_at quand published_at est absent', async () => {
-      mockAxiosGet.mock.mockImplementationOnce(async () => ({
-        data: {
-          data: {
-            title: 'Un Titre',
-            description: 'Une description',
-            content: '# Un contenu',
-            created_at: 1704067200000,
-            updated_at: 1706745600000,
-          },
-        },
-      }));
-      const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
-
-      const reponse = await adaptateurCmsCrisp.recupereArticle('ID_ARTICLE');
-
-      assert.equal(reponse.datePublication, '2024-01-01T00:00:00.000Z');
-    });
-
-    it('ne définit aucune date quand Crisp n’en fournit pas', async () => {
-      mockAxiosGet.mock.mockImplementationOnce(async () => ({
-        data: {
-          data: {
-            title: 'Un Titre',
-            description: 'Une description',
-            content: '# Un contenu',
-          },
-        },
-      }));
-      const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
-
-      const reponse = await adaptateurCmsCrisp.recupereArticle('ID_ARTICLE');
-
-      assert.equal(reponse.datePublication, undefined);
-      assert.equal(reponse.dateMiseAJour, undefined);
-    });
-  });
-
-  describe("sur récupération de tous les articles d'une catégorie", () => {
+  describe("sur récupération de tous les articles d'un chemin", () => {
     let reponseAxios: ResumesArticlesAPI = {
       data: [
         {
-          article_id: 'ID_ARTICLE',
-          url: 'URL_ARTICLE',
-          title: 'TITRE_ARTICLE',
-          category: {
-            section: { section_id: 'ID_SECTION', name: 'NOM_SECTION' },
+          slug: 'SLUG_ARTICLE',
+          state: {
+            published: true,
           },
-          status: 'published',
-          updated_at: 1706745600000,
+          title: 'TITRE_ARTICLE',
+          type: 'file',
+        },
+        {
+          slug: 'SLUG_SECTION',
+          state: {
+            published: true,
+          },
+          title: 'TITRE_SECTION',
+          type: 'directory',
         },
       ],
     };
 
-    beforeEach(() => {
+    it("utilise l'identifiant de la catégorie pour la requête", async () => {
       mockAxiosGet.mock.mockImplementationOnce(async () => ({
         data: reponseAxios,
         status: 200,
       }));
-    });
-
-    it("utilise l'identifiant de la catégorie pour la requête", async () => {
+      mockAxiosGet.mock.mockImplementationOnce(async () => ({
+        data: { data: [] },
+        status: 200,
+      }));
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
-      await adaptateurCmsCrisp.recupereArticlesCategorie('ID_CATEGORIE');
+      await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
 
       const urlUtilisee = mockAxiosGet.mock.calls[0].arguments[0];
       assert.strictEqual(
         urlUtilisee,
-        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/locale/fr/articles/1?filter_category_id=ID_CATEGORIE'
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/list/fr/articles/1?sub_path=CHEMIN_CATEGORIE'
       );
     });
 
     it('retourne le resumé des articles', async () => {
+      mockAxiosGet.mock.mockImplementationOnce(async () => ({
+        data: {
+          data: [
+            {
+              slug: 'SLUG_ARTICLE',
+              state: {
+                published: true,
+              },
+              title: 'TITRE_ARTICLE',
+              type: 'file',
+            },
+          ],
+        },
+        status: 200,
+      }));
+
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
       const reponse =
-        await adaptateurCmsCrisp.recupereArticlesCategorie('ID_CATEGORIE');
-
+        await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
       assert.equal(reponse[0].estPublie, true);
-      assert.equal(reponse[0].dateMiseAJour, '2024-02-01T00:00:00.000Z');
-      assert.equal(reponse[0].id, 'ID_ARTICLE');
-      assert.equal(reponse[0].id, 'ID_ARTICLE');
-      assert.equal(reponse[0].url, 'URL_ARTICLE');
+      assert.equal(reponse[0].slug, 'SLUG_ARTICLE');
       assert.equal(reponse[0].titre, 'TITRE_ARTICLE');
-      assert.deepEqual(reponse[0].section, {
-        id: 'ID_SECTION',
-        nom: 'NOM_SECTION',
-      });
     });
 
     it('aggrège les articles paginés', async () => {
+      mockAxiosGet.mock.mockImplementationOnce(async () => ({
+        data: {
+          data: [
+            {
+              slug: 'SLUG_ARTICLE',
+              state: {
+                published: true,
+              },
+              title: 'TITRE_ARTICLE',
+              type: 'file',
+            },
+          ],
+        },
+        status: HttpStatusCode.PartialContent,
+      }));
+
       mockAxiosGet.mock.mockImplementationOnce(
         async () => ({
-          data: reponseAxios,
-          status: HttpStatusCode.PartialContent,
-        }),
-        0
-      );
-      mockAxiosGet.mock.mockImplementationOnce(
-        async () => ({
-          data: reponseAxios,
+          data: {
+            data: [
+              {
+                slug: 'SLUG_ARTICLE',
+                state: {
+                  published: true,
+                },
+                title: 'TITRE_ARTICLE',
+                type: 'file',
+              },
+            ],
+          },
           status: 200,
         }),
         1
@@ -192,18 +168,85 @@ describe("L'adaptateur CMS Crisp", () => {
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
       const reponse =
-        await adaptateurCmsCrisp.recupereArticlesCategorie('ID_CATEGORIE');
+        await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
 
       assert.equal(mockAxiosGet.mock.callCount(), 2);
       assert.equal(
         mockAxiosGet.mock.calls[0].arguments[0],
-        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/locale/fr/articles/1?filter_category_id=ID_CATEGORIE'
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/list/fr/articles/1?sub_path=CHEMIN_CATEGORIE'
       );
       assert.equal(
         mockAxiosGet.mock.calls[1].arguments[0],
-        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/locale/fr/articles/2?filter_category_id=ID_CATEGORIE'
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/list/fr/articles/2?sub_path=CHEMIN_CATEGORIE'
       );
       assert.equal(reponse.length, 2);
+    });
+
+    it('ne résume pas les dossiers', async () => {
+      mockAxiosGet.mock.mockImplementationOnce(async () => ({
+        data: {
+          data: [
+            {
+              slug: 'SLUG_SECTION',
+              state: {
+                published: true,
+              },
+              title: 'TITRE_SECTION',
+              type: 'directory',
+            },
+          ],
+        },
+        status: 200,
+      }));
+      mockAxiosGet.mock.mockImplementationOnce(async () => ({
+        data: {
+          data: [],
+        },
+        status: 200,
+      }));
+      const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
+
+      const reponse =
+        await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
+      assert.equal(reponse.length, 0);
+    });
+
+    it('récupère aussi les articles des sous répertoires', async () => {
+      mockAxiosGet.mock.mockImplementationOnce(async () => ({
+        data: reponseAxios,
+        status: 200,
+      }));
+      mockAxiosGet.mock.mockImplementationOnce(async () => ({
+        data: reponseAxios,
+        status: 200,
+      }));
+      mockAxiosGet.mock.mockImplementationOnce(
+        async () => ({
+          data: {
+            data: [
+              {
+                slug: 'SLUG_ARTICLE_SECTION_1',
+                state: {
+                  published: true,
+                },
+                title: 'TITRE_ARTICLE_SECTION_1',
+                type: 'file',
+              },
+            ],
+          },
+          status: 200,
+        }),
+        1
+      );
+      const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
+      const reponse =
+        await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
+      assert.equal(reponse.length, 2);
+      assert.equal(reponse[1].slug, 'SLUG_ARTICLE_SECTION_1');
+      assert.deepEqual(reponse[1].section, {
+        id: 'SLUG_SECTION',
+        nom: 'TITRE_SECTION',
+      });
     });
   });
 

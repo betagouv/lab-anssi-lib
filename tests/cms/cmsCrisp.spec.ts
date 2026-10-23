@@ -42,13 +42,8 @@ describe('Le CMS Crisp', () => {
     let cmsCrisp: CmsCrisp;
     beforeEach(() => {
       cmsCrisp = new CmsCrisp('id-site', 'cle-api');
-      cmsCrisp.adaptateurCmsCrisp = {
-        urlBase: '',
-        enteteCrisp: { headers: {} },
-        recupereArticle: async (_: string) => donneesParDefautAdaptateur,
-        recupereArticlesCategorie: async (_: string) => [],
-        recupereSectionsCategorie: async (_: string) => [],
-      };
+      cmsCrisp.adaptateurCmsCrisp.recupereArticle = async (_: string) =>
+        donneesParDefautAdaptateur;
     });
 
     it('récupère le titre et la description', async () => {
@@ -117,39 +112,28 @@ describe('Le CMS Crisp', () => {
     let cmsCrisp: CmsCrisp;
     beforeEach(() => {
       cmsCrisp = new CmsCrisp('id-site', 'cle-api');
-      cmsCrisp.adaptateurCmsCrisp = {
-        urlBase: '',
-        enteteCrisp: { headers: {} },
-        recupereArticle: async (_: string) => donneesParDefautAdaptateur,
-        recupereArticlesCategorie: async (_: string) => [],
-        recupereSectionsCategorie: async (_: string) => [],
-      };
+      cmsCrisp.adaptateurCmsCrisp.recupereArticle = async (_: string) =>
+        donneesParDefautAdaptateur;
     });
 
     it("récupère l'article selon son slug", async () => {
-      let categoriePassee;
-      cmsCrisp.adaptateurCmsCrisp.recupereArticlesCategorie = async (
-        idCategorie
+      let cheminPasse;
+      cmsCrisp.adaptateurCmsCrisp.recupereArticlesParChemin = async (
+        chemin
       ) => {
-        categoriePassee = idCategorie;
+        cheminPasse = chemin;
         return [
           {
-            id: '1',
+            estPublie: true,
+            slug: 'un-slug',
             titre: 'Un titre',
-            url: 'http://localhost://crisp/article/un-slug-1ab2c3/',
-            section: {
-              id: 'id_1',
-              nom: 'uneSection',
-            },
+            section: { id: 'id_1', nom: 'uneSection' },
           },
           {
-            id: '2',
+            estPublie: true,
+            slug: 'un-autre-slug',
             titre: 'Un Deuxième titre',
-            url: 'http://localhost://crisp/article/un-autre-slug-1ab2c4/',
-            section: {
-              id: 'id_2',
-              nom: 'uneAutreSection',
-            },
+            section: { id: 'id_2', nom: 'uneAutreSection' },
           },
         ];
       };
@@ -161,18 +145,13 @@ describe('Le CMS Crisp', () => {
 
       await cmsCrisp.recupereArticleCategorie('un-slug', 'UneCategorie');
 
-      assert.equal(idPasse, '1');
-      assert.equal(categoriePassee, 'UneCategorie');
+      assert.equal(idPasse, 'un-slug');
+      assert.equal(cheminPasse, 'UneCategorie');
     });
 
     it('retourne une erreur si aucun article ne correspond au slug', async () => {
-      cmsCrisp.adaptateurCmsCrisp.recupereArticlesCategorie = async () => [
-        {
-          id: '1',
-          url: 'http://localhost://crisp/article/un-slug-1ab2c3/',
-          titre: 'Un Titre',
-          section: {},
-        },
+      cmsCrisp.adaptateurCmsCrisp.recupereArticlesParChemin = async () => [
+        { estPublie: true, slug: 'un-slug', titre: 'Un Titre' },
       ];
 
       await assert.rejects(
@@ -190,15 +169,12 @@ describe('Le CMS Crisp', () => {
         titre: 'Un titre',
         description: 'Une description',
       });
-      cmsCrisp.adaptateurCmsCrisp.recupereArticlesCategorie = async () => [
+      cmsCrisp.adaptateurCmsCrisp.recupereArticlesParChemin = async () => [
         {
-          id: '1',
-          url: 'http://localhost://crisp/article/un-slug-1ab2c3/',
+          estPublie: true,
+          slug: 'un-slug',
           titre: 'Un Titre',
-          section: {
-            id: 'id_1',
-            nom: 'uneSection',
-          },
+          section: { id: 'id_1', nom: 'uneSection' },
         },
       ];
 
@@ -240,21 +216,18 @@ describe('Le CMS Crisp', () => {
   });
 
   describe("sur demande des articles d'une catégorie", () => {
-    it("délègue à l'adaptateur la récupération des articles et extrait le slug", async () => {
+    it("délègue à l'adaptateur la récupération des articles", async () => {
       const cmsCrisp = new CmsCrisp('id-site', 'cle-api');
-      cmsCrisp.adaptateurCmsCrisp.recupereArticlesCategorie = async (
-        idCategorie
+      cmsCrisp.adaptateurCmsCrisp.recupereArticlesParChemin = async (
+        chemin
       ) => {
-        return idCategorie === 'UneCategorie'
+        return chemin === 'UneCategorie'
           ? [
               {
-                id: '1',
+                estPublie: true,
+                slug: 'un-slug',
                 titre: 'unArticle',
-                url: 'http://localhost/article/un-slug-abc123/',
-                section: {
-                  id: 'A',
-                  nom: 'uneSection',
-                },
+                section: { id: 'A', nom: 'uneSection' },
               },
             ]
           : [];
@@ -264,32 +237,12 @@ describe('Le CMS Crisp', () => {
 
       assert.deepEqual(articles, [
         {
-          id: 1,
-          titre: 'unArticle',
-          url: 'http://localhost/article/un-slug-abc123/',
+          estPublie: true,
           slug: 'un-slug',
-          section: {
-            id: 'A',
-            nom: 'uneSection',
-          },
+          titre: 'unArticle',
+          section: { id: 'A', nom: 'uneSection' },
         },
       ]);
-    });
-
-    it("reste robuste si l'url n'est pas définie", async () => {
-      const cmsCrisp = new CmsCrisp('id-site', 'cle-api');
-      cmsCrisp.adaptateurCmsCrisp.recupereArticlesCategorie = async () => [
-        {
-          id: '1',
-          url: '',
-          titre: 'Un Titre',
-          section: {},
-        },
-      ];
-
-      const articles = await cmsCrisp.recupereArticlesCategorie('UneCategorie');
-
-      assert.equal(articles[0].slug, null);
     });
   });
 });
