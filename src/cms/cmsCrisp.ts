@@ -56,15 +56,13 @@ export class CmsCrisp {
     };
   }
 
-  async recupereSectionsCategorie(
-    idCategorie: string
-  ): Promise<SectionCrisp[]> {
-    return this.adaptateurCmsCrisp.recupereSectionsCategorie(idCategorie);
+  async recupereSectionsParChemin(chemin: string): Promise<SectionCrisp[]> {
+    return this.adaptateurCmsCrisp.recupereSectionsParChemin(chemin);
   }
 
-  async recupereArticlesCategorie(
-    idCategorie: string
+  async recupereArticlesParChemin(
+    chemin: string
   ): Promise<ResumeArticleCrispAvecSlug[]> {
-    return await this.adaptateurCmsCrisp.recupereArticlesParChemin(idCategorie);
+    return await this.adaptateurCmsCrisp.recupereArticlesParChemin(chemin);
   }
 }
