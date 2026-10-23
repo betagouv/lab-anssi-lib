@@ -20,7 +20,7 @@ export class CmsCrisp {
   }
 
   async recupereArticle(id: string): Promise<PageHtmlCrisp> {
-    const article = await this.adaptateurCmsCrisp.recupereArticle(id);
+    const article = await this.adaptateurCmsCrisp.recupereArticleParChemin(id);
     const {
       titre,
       contenuMarkdown,

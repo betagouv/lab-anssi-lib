@@ -1,9 +1,9 @@
-import { beforeEach, describe, it } from 'node:test';
-import { CmsCrisp } from '../../src/cms/cmsCrisp';
 import assert from 'assert';
+import { beforeEach, describe, it } from 'node:test';
+import { EntreeTableDesMatieres, ResumeArticleCrispAvecSlug } from '../../src';
+import { CmsCrisp } from '../../src/cms/cmsCrisp';
 import CrispMarkdown from '../../src/cms/crispMarkdown';
 import { ErreurArticleCrispIntrouvable } from '../../src/erreurs';
-import { EntreeTableDesMatieres } from '../../src';
 
 class MockCrispMarkdown extends CrispMarkdown {
   constructor(private contenu: string) {
@@ -42,12 +42,15 @@ describe('Le CMS Crisp', () => {
     let cmsCrisp: CmsCrisp;
     beforeEach(() => {
       cmsCrisp = new CmsCrisp('id-site', 'cle-api');
-      cmsCrisp.adaptateurCmsCrisp.recupereArticle = async (_: string) =>
-        donneesParDefautAdaptateur;
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
+        _: string
+      ) => donneesParDefautAdaptateur;
     });
 
     it('récupère le titre et la description', async () => {
-      cmsCrisp.adaptateurCmsCrisp.recupereArticle = async (id: string) =>
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
+        id: string
+      ) =>
         id === '23'
           ? {
               contenuMarkdown: '',
@@ -63,7 +66,7 @@ describe('Le CMS Crisp', () => {
     });
 
     it('transmet les dates de publication et de mise à jour', async () => {
-      cmsCrisp.adaptateurCmsCrisp.recupereArticle = async () => ({
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async () => ({
         contenuMarkdown: '',
         titre: 'titre',
         description: 'description',
@@ -81,7 +84,9 @@ describe('Le CMS Crisp', () => {
       cmsCrisp.constructeurCrispMarkdown = (contenuMarkdown) =>
         new MockCrispMarkdown(contenuMarkdown);
 
-      cmsCrisp.adaptateurCmsCrisp.recupereArticle = async (_: string) => ({
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
+        _: string
+      ) => ({
         contenuMarkdown: 'contenu markdown',
         titre: '',
         description: '',
@@ -96,7 +101,9 @@ describe('Le CMS Crisp', () => {
       cmsCrisp.constructeurCrispMarkdown = (contenuMarkdown) =>
         new MockCrispMarkdown(contenuMarkdown);
 
-      cmsCrisp.adaptateurCmsCrisp.recupereArticle = async (_: string) => ({
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
+        _: string
+      ) => ({
         contenuMarkdown: 'Partie 1;Partie 2',
         titre: 'titre',
         description: 'description',
@@ -112,8 +119,9 @@ describe('Le CMS Crisp', () => {
     let cmsCrisp: CmsCrisp;
     beforeEach(() => {
       cmsCrisp = new CmsCrisp('id-site', 'cle-api');
-      cmsCrisp.adaptateurCmsCrisp.recupereArticle = async (_: string) =>
-        donneesParDefautAdaptateur;
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
+        _: string
+      ) => donneesParDefautAdaptateur;
     });
 
     it("récupère l'article selon son slug", async () => {
@@ -124,12 +132,14 @@ describe('Le CMS Crisp', () => {
         cheminPasse = chemin;
         return [
           {
+            chemin: 'un-slug',
             estPublie: true,
             slug: 'un-slug',
             titre: 'Un titre',
             section: { id: 'id_1', nom: 'uneSection' },
           },
           {
+            chemin: 'un-autre-slug',
             estPublie: true,
             slug: 'un-autre-slug',
             titre: 'Un Deuxième titre',
@@ -138,7 +148,9 @@ describe('Le CMS Crisp', () => {
         ];
       };
       let idPasse;
-      cmsCrisp.adaptateurCmsCrisp.recupereArticle = async (idArticle) => {
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
+        idArticle
+      ) => {
         idPasse = idArticle;
         return donneesParDefautAdaptateur;
       };
@@ -151,7 +163,12 @@ describe('Le CMS Crisp', () => {
 
     it('retourne une erreur si aucun article ne correspond au slug', async () => {
       cmsCrisp.adaptateurCmsCrisp.recupereArticlesParChemin = async () => [
-        { estPublie: true, slug: 'un-slug', titre: 'Un Titre' },
+        {
+          chemin: 'un-slug',
+          estPublie: true,
+          slug: 'un-slug',
+          titre: 'Un Titre',
+        },
       ];
 
       await assert.rejects(
@@ -164,13 +181,14 @@ describe('Le CMS Crisp', () => {
     });
 
     it("retourne tout le contenu de l'article, en ajoutant les données de section", async () => {
-      cmsCrisp.adaptateurCmsCrisp.recupereArticle = async () => ({
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async () => ({
         contenuMarkdown: '# Un contenu',
         titre: 'Un titre',
         description: 'Une description',
       });
       cmsCrisp.adaptateurCmsCrisp.recupereArticlesParChemin = async () => [
         {
+          chemin: 'un-slug',
           estPublie: true,
           slug: 'un-slug',
           titre: 'Un Titre',
@@ -224,6 +242,7 @@ describe('Le CMS Crisp', () => {
         return chemin === 'UneCategorie'
           ? [
               {
+                chemin: 'un-slug',
                 estPublie: true,
                 slug: 'un-slug',
                 titre: 'unArticle',
@@ -237,12 +256,13 @@ describe('Le CMS Crisp', () => {
 
       assert.deepEqual(articles, [
         {
+          chemin: 'un-slug',
           estPublie: true,
           slug: 'un-slug',
           titre: 'unArticle',
           section: { id: 'A', nom: 'uneSection' },
         },
-      ]);
+      ] satisfies ResumeArticleCrispAvecSlug[]);
     });
   });
 });

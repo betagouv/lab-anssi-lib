@@ -24,6 +24,7 @@ const enISO = (epochMillisecondes?: number): string | undefined =>
   epochMillisecondes ? new Date(epochMillisecondes).toISOString() : undefined;
 
 export type ResumeArticleCrisp = {
+  chemin: string;
   estPublie: boolean;
   slug: string;
   titre: string;
@@ -65,17 +66,17 @@ export class AdaptateurCmsCrisp {
     };
   }
 
-  recupereArticle = async (
-    idArticle: string
+  recupereArticleParChemin = async (
+    chemin: string
   ): Promise<ArticleMarkdownCrisp> => {
     const reponseMetadata = await axios.get<{
       data: { title: string; description: string | null };
     }>(
-      `${this.urlBase}helpdesk/tree/metadata/fr/articles/${idArticle}`,
+      `${this.urlBase}helpdesk/tree/metadata/fr/articles/${chemin}`,
       this.enteteCrisp
     );
     const reponseContenu = await axios.get<{ data: { content: string } }>(
-      `${this.urlBase}helpdesk/tree/content/fr/articles/${idArticle}`,
+      `${this.urlBase}helpdesk/tree/content/fr/articles/${chemin}`,
       this.enteteCrisp
     );
     const { description, title } = reponseMetadata.data.data;
@@ -146,14 +147,13 @@ export class AdaptateurCmsCrisp {
         ...donnees,
         ...reponse.data.data
           .filter((entité) => entité.type === 'file')
-          .map((a) => {
-            return {
-              estPublie: a.state.published,
-              slug: a.slug,
-              titre: a.title,
-              section,
-            };
-          }),
+          .map((a) => ({
+            estPublie: a.state.published,
+            slug: a.slug,
+            titre: a.title,
+            section,
+            chemin: `${chemin}/${a.slug}`,
+          })),
       ];
 
       const sousArticles = await Promise.all(

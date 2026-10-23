@@ -45,7 +45,7 @@ describe("L'adaptateur CMS Crisp", () => {
     it('utilise Axios pour faire un appel API', async () => {
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
-      await adaptateurCmsCrisp.recupereArticle('blog/SLUG_ARTICLE');
+      await adaptateurCmsCrisp.recupereArticleParChemin('blog/SLUG_ARTICLE');
 
       assert.equal(mockAxiosGet.mock.callCount(), 2);
       const premiereUrlUtilisee = mockAxiosGet.mock.calls[0].arguments[0];
@@ -82,7 +82,7 @@ describe("L'adaptateur CMS Crisp", () => {
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
       const reponse =
-        await adaptateurCmsCrisp.recupereArticle('blog/SLUG_ARTICLE');
+        await adaptateurCmsCrisp.recupereArticleParChemin('blog/SLUG_ARTICLE');
       assert.equal(reponse.titre, 'Un Titre');
       assert.equal(reponse.description, 'Une description');
       assert.equal(reponse.contenuMarkdown, '# Un contenu markdown');
@@ -154,6 +154,7 @@ describe("L'adaptateur CMS Crisp", () => {
       assert.equal(reponse[0].estPublie, true);
       assert.equal(reponse[0].slug, 'SLUG_ARTICLE');
       assert.equal(reponse[0].titre, 'TITRE_ARTICLE');
+      assert.equal(reponse[0].chemin, 'CHEMIN_CATEGORIE/SLUG_ARTICLE');
     });
 
     it('aggrège les articles paginés', async () => {
@@ -270,6 +271,10 @@ describe("L'adaptateur CMS Crisp", () => {
         await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
       assert.equal(reponse.length, 2);
       assert.equal(reponse[1].slug, 'SLUG_ARTICLE_SECTION_1');
+      assert.equal(
+        reponse[1].chemin,
+        'CHEMIN_CATEGORIE/SLUG_SECTION/SLUG_ARTICLE_SECTION_1'
+      );
       assert.deepEqual(reponse[1].section, {
         id: 'SLUG_SECTION',
         nom: 'TITRE_SECTION',
