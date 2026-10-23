@@ -24,30 +24,23 @@ const enISO = (epochMillisecondes?: number): string | undefined =>
   epochMillisecondes ? new Date(epochMillisecondes).toISOString() : undefined;
 
 export type ResumeArticleCrisp = {
-  dateMiseAJour?: string;
   estPublie: boolean;
-  id: string;
-  section: {
-    id?: string;
-    nom?: string;
-  };
+  slug: string;
   titre: string;
-  url: string;
+  section?: {
+    id: string;
+    nom: string;
+  };
 };
 
 export type ResumesArticlesAPI = {
   data: {
-    article_id: string;
-    category?: {
-      section?: {
-        section_id: string;
-        name: string;
-      };
-    };
-    status?: 'published';
+    type: 'file' | 'directory';
+    slug: string;
     title: string;
-    updated_at?: number;
-    url: string;
+    state: {
+      published: boolean;
+    };
   }[];
 };
 
@@ -93,45 +86,10 @@ export class AdaptateurCmsCrisp {
     };
   };
 
-  recupereArticlesCategorie = async (
-    idCategorie: string
+  recupereArticlesParChemin = async (
+    chemin: string
   ): Promise<ResumeArticleCrisp[]> => {
-    const params = new URLSearchParams({
-      filter_category_id: idCategorie,
-    });
-
-    let termine = false;
-    let pageActuelle = 1;
-    let donnees: ResumeArticleCrisp[] = [];
-    while (!termine) {
-      const reponse = await axios.get<ResumesArticlesAPI>(
-        `${this.urlBase}helpdesk/locale/fr/articles/${pageActuelle}?${params}`,
-        this.enteteCrisp
-      );
-
-      donnees = [
-        ...donnees,
-        ...reponse.data.data.map((a) => {
-          const dateMiseAJour = enISO(a.updated_at);
-          return {
-            ...(dateMiseAJour ? { dateMiseAJour } : {}),
-            estPublie: a.status === 'published',
-            id: a.article_id,
-            url: a.url,
-            titre: a.title,
-            section: {
-              id: a.category?.section?.section_id,
-              nom: a.category?.section?.name,
-            },
-          };
-        }),
-      ];
-
-      if (reponse.status !== HttpStatusCode.PartialContent) termine = true;
-      pageActuelle += 1;
-    }
-
-    return donnees;
+    return await this.recupereArticleParCheminRecursivement(chemin);
   };
 
   recupereSectionsCategorie = async (
@@ -147,4 +105,58 @@ export class AdaptateurCmsCrisp {
       nom: section.name,
     }));
   };
+
+  private async recupereArticleParCheminRecursivement(
+    chemin: string,
+    section?: { id: string; nom: string }
+  ) {
+    const params = new URLSearchParams({
+      sub_path: chemin,
+    });
+
+    let termine = false;
+    let pageActuelle = 1;
+    let donnees: ResumeArticleCrisp[] = [];
+    while (!termine) {
+      const reponse = await axios.get<ResumesArticlesAPI>(
+        `${this.urlBase}helpdesk/tree/list/fr/articles/${pageActuelle}?${params}`,
+        this.enteteCrisp
+      );
+
+      donnees = [
+        ...donnees,
+        ...reponse.data.data
+          .filter((entité) => entité.type === 'file')
+          .map((a) => {
+            return {
+              estPublie: a.state.published,
+              slug: a.slug,
+              titre: a.title,
+              section,
+            };
+          }),
+      ];
+
+      const sousArticles = await Promise.all(
+        reponse.data.data
+          .filter((entité) => entité.type === 'directory')
+          .map((dossier) =>
+            this.recupereArticleParCheminRecursivement(
+              chemin + '/' + dossier.slug,
+              {
+                id: dossier.slug,
+                nom: dossier.title,
+              }
+            )
+          )
+      );
+
+      donnees = donnees.concat(sousArticles.flat());
+
+      if (reponse.status !== HttpStatusCode.PartialContent) termine = true;
+      pageActuelle += 1;
+    }
+
+    return donnees;
+  }
 }
