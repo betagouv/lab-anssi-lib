@@ -68,21 +68,21 @@ export class AdaptateurCmsCrisp {
   recupereArticle = async (
     idArticle: string
   ): Promise<ArticleMarkdownCrisp> => {
-    const reponse = await axios.get<ArticleMarkdownAPI>(
-      `${this.urlBase}helpdesk/locale/fr/article/${idArticle}`,
+    const reponseMetadata = await axios.get<{
+      data: { title: string; description: string | null };
+    }>(
+      `${this.urlBase}helpdesk/tree/metadata/fr/articles/${idArticle}`,
       this.enteteCrisp
     );
-    const donnees = reponse.data;
-    const datePublication = enISO(
-      donnees.data.published_at ?? donnees.data.created_at
+    const reponseContenu = await axios.get<{ data: { content: string } }>(
+      `${this.urlBase}helpdesk/tree/content/fr/articles/${idArticle}`,
+      this.enteteCrisp
     );
-    const dateMiseAJour = enISO(donnees.data.updated_at);
+    const { description, title } = reponseMetadata.data.data;
     return {
-      contenuMarkdown: donnees.data.content,
-      titre: donnees.data.title,
-      description: donnees.data.description,
-      ...(datePublication ? { datePublication } : {}),
-      ...(dateMiseAJour ? { dateMiseAJour } : {}),
+      contenuMarkdown: reponseContenu.data.data.content,
+      titre: title,
+      description: description ?? '',
     };
   };
 

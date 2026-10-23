@@ -22,40 +22,67 @@ describe("L'adaptateur CMS Crisp", () => {
   });
 
   describe("sur récupération d'un article", () => {
+    let reponsesProgrammees: Map<string, any>;
+
     beforeEach(() => {
-      mockAxiosGet.mock.mockImplementationOnce(async () => ({
-        data: {
+      reponsesProgrammees = new Map();
+      mockAxiosGet.mock.mockImplementation(async (url: string) => {
+        if (reponsesProgrammees.has(url)) {
+          return {
+            data: {
+              data: reponsesProgrammees.get(url),
+            },
+          };
+        }
+        return {
           data: {
-            title: 'Un Titre',
-            description: 'Une description',
-            content: '# Un contenu markdown',
+            data: {},
           },
-        },
-      }));
+        };
+      });
     });
 
     it('utilise Axios pour faire un appel API', async () => {
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
-      await adaptateurCmsCrisp.recupereArticle('ID_ARTICLE');
+      await adaptateurCmsCrisp.recupereArticle('blog/SLUG_ARTICLE');
 
-      assert.equal(mockAxiosGet.mock.callCount(), 1);
-      const urlUtilisee = mockAxiosGet.mock.calls[0].arguments[0];
+      assert.equal(mockAxiosGet.mock.callCount(), 2);
+      const premiereUrlUtilisee = mockAxiosGet.mock.calls[0].arguments[0];
       const headerUtilise = mockAxiosGet.mock.calls[0].arguments[1]?.headers;
+      const deuxiemeUrlUtilisee = mockAxiosGet.mock.calls[1].arguments[0];
       assert.strictEqual(
-        urlUtilisee,
-        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/locale/fr/article/ID_ARTICLE'
+        premiereUrlUtilisee,
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/metadata/fr/articles/blog/SLUG_ARTICLE'
       );
       assert.deepEqual(headerUtilise, {
         'X-Crisp-Tier': 'plugin',
         Authorization: 'Basic Q0xFX0FQSQ==',
       });
+      assert.strictEqual(
+        deuxiemeUrlUtilisee,
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/content/fr/articles/blog/SLUG_ARTICLE'
+      );
     });
 
     it("retourne le contenu de l'article", async () => {
+      reponsesProgrammees.set(
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/metadata/fr/articles/blog/SLUG_ARTICLE',
+        {
+          title: 'Un Titre',
+          description: 'Une description',
+        }
+      );
+      reponsesProgrammees.set(
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/content/fr/articles/blog/SLUG_ARTICLE',
+        {
+          content: '# Un contenu markdown',
+        }
+      );
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
-      const reponse = await adaptateurCmsCrisp.recupereArticle('ID_ARTICLE');
+      const reponse =
+        await adaptateurCmsCrisp.recupereArticle('blog/SLUG_ARTICLE');
       assert.equal(reponse.titre, 'Un Titre');
       assert.equal(reponse.description, 'Une description');
       assert.equal(reponse.contenuMarkdown, '# Un contenu markdown');
