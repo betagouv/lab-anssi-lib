@@ -15,9 +15,7 @@ export type PageHtmlCrisp = {
   dateMiseAJour?: string;
 };
 
-export type ResumeArticleCrispAvecSlug = ResumeArticleCrisp & {
-  slug: string | null;
-};
+export type ResumeArticleCrispAvecSlug = ResumeArticleCrisp;
 
 export type SectionCrisp = {
   id: string;
