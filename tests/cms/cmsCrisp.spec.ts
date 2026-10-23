@@ -219,7 +219,7 @@ describe('Le CMS Crisp', () => {
   describe("sur demande des sections d'une catégorie", () => {
     it("délègue à l'adaptateur la récupération des sections", async () => {
       const cmsCrisp = new CmsCrisp('id-site', 'cle-api');
-      cmsCrisp.adaptateurCmsCrisp.recupereSectionsCategorie = async (
+      cmsCrisp.adaptateurCmsCrisp.recupereSectionsParChemin = async (
         idCategorie
       ) => {
         return idCategorie === 'UneCategorie'
@@ -227,7 +227,7 @@ describe('Le CMS Crisp', () => {
           : [];
       };
 
-      const sections = await cmsCrisp.recupereSectionsCategorie('UneCategorie');
+      const sections = await cmsCrisp.recupereSectionsParChemin('UneCategorie');
 
       assert.deepEqual(sections, [{ id: '1', nom: 'uneSection' }]);
     });
@@ -252,7 +252,7 @@ describe('Le CMS Crisp', () => {
           : [];
       };
 
-      const articles = await cmsCrisp.recupereArticlesCategorie('UneCategorie');
+      const articles = await cmsCrisp.recupereArticlesParChemin('UneCategorie');
 
       assert.deepEqual(articles, [
         {

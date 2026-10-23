@@ -297,7 +297,7 @@ describe("L'adaptateur CMS Crisp", () => {
     it("utilise l'identifiant de la catégorie pour la requête des sections", async () => {
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
-      await adaptateurCmsCrisp.recupereSectionsCategorie('BLOG');
+      await adaptateurCmsCrisp.recupereSectionsParChemin('BLOG');
 
       const urlUtilisee = mockAxiosGet.mock.calls[0].arguments[0];
       assert.strictEqual(
@@ -310,7 +310,7 @@ describe("L'adaptateur CMS Crisp", () => {
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
       const reponse =
-        await adaptateurCmsCrisp.recupereSectionsCategorie('ID_CATEGORIE');
+        await adaptateurCmsCrisp.recupereSectionsParChemin('ID_CATEGORIE');
 
       assert.equal(reponse[0].id, 'ID_SECTION');
       assert.equal(reponse[0].nom, 'NOM_SECTION');

@@ -93,11 +93,11 @@ export class AdaptateurCmsCrisp {
     return await this.recupereArticleParCheminRecursivement(chemin);
   };
 
-  recupereSectionsCategorie = async (
-    idCategorie: string
+  recupereSectionsParChemin = async (
+    chemin: string
   ): Promise<SectionCrisp[]> => {
     const params = new URLSearchParams({
-      sub_path: idCategorie,
+      sub_path: chemin,
     });
     let termine = false;
     let pageActuelle = 1;
