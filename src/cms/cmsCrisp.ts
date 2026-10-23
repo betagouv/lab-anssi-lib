@@ -44,15 +44,15 @@ export class CmsCrisp {
     idCategorie: string
   ): Promise<ArticleCrispAvecSection> {
     const articles =
-      await this.adaptateurCmsCrisp.recupereArticlesCategorie(idCategorie);
-    const article = articles.find((a) => this.extraitSlugArticle(a) === slug);
+      await this.adaptateurCmsCrisp.recupereArticlesParChemin(idCategorie);
+    const article = articles.find((a) => a.slug === slug);
     if (!article) {
       throw new ErreurArticleCrispIntrouvable();
     }
-    const articleCrisp = await this.recupereArticle(article.id);
+    const articleCrisp = await this.recupereArticle(article.slug);
     return {
       ...articleCrisp,
-      section: { id: article.section.id, nom: article.section.nom },
+      section: { id: article.section?.id, nom: article.section?.nom },
     };
   }
 
@@ -65,20 +65,6 @@ export class CmsCrisp {
   async recupereArticlesCategorie(
     idCategorie: string
   ): Promise<ResumeArticleCrispAvecSlug[]> {
-    const articles =
-      await this.adaptateurCmsCrisp.recupereArticlesCategorie(idCategorie);
-    return articles.map((article) => {
-      const slug = this.extraitSlugArticle(article);
-      return { ...article, slug: slug || null };
-    });
-  }
-
-  private extraitSlugArticle(article: ResumeArticleCrisp) {
-    try {
-      const regex = /\/article\/(.*)-[a-zA-Z0-9]{1,10}\//gm;
-      return regex.exec(article.url)?.[1];
-    } catch (e) {
-      return null;
-    }
+    return await this.adaptateurCmsCrisp.recupereArticlesParChemin(idCategorie);
   }
 }

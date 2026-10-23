@@ -95,15 +95,34 @@ export class AdaptateurCmsCrisp {
   recupereSectionsCategorie = async (
     idCategorie: string
   ): Promise<SectionCrisp[]> => {
-    const reponse = await axios.get<SectionsAPI>(
-      `${this.urlBase}helpdesk/locale/fr/category/${idCategorie}/sections/0`,
-      this.enteteCrisp
-    );
+    const params = new URLSearchParams({
+      sub_path: idCategorie,
+    });
+    let termine = false;
+    let pageActuelle = 1;
+    let donnees: SectionCrisp[] = [];
+    while (!termine) {
+      const reponse = await axios.get<ResumesArticlesAPI>(
+        `${this.urlBase}helpdesk/tree/list/fr/articles/${pageActuelle}?${params}`,
+        this.enteteCrisp
+      );
 
-    return reponse.data.data.map((section) => ({
-      id: section.section_id,
-      nom: section.name,
-    }));
+      donnees = [
+        ...donnees,
+        ...reponse.data.data
+          .filter((entité) => entité.type === 'directory')
+          .map((a) => {
+            return {
+              id: a.slug,
+              nom: a.title,
+            };
+          }),
+      ];
+
+      if (reponse.status !== HttpStatusCode.PartialContent) termine = true;
+      pageActuelle += 1;
+    }
+    return donnees;
   };
 
   private async recupereArticleParCheminRecursivement(

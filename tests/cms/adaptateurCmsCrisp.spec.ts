@@ -253,19 +253,24 @@ describe("L'adaptateur CMS Crisp", () => {
   describe("sur récupération de toutes les sections d'une catégorie", () => {
     beforeEach(() => {
       mockAxiosGet.mock.mockImplementationOnce(async () => ({
-        data: { data: [{ section_id: 'ID_SECTION', name: 'NOM_SECTION' }] },
+        data: {
+          data: [
+            { slug: 'ID_SECTION', title: 'NOM_SECTION', type: 'directory' },
+            { slug: 'ID_ARTICLE', title: 'NOM_ARTICLE', type: 'file' },
+          ],
+        },
       }));
     });
 
     it("utilise l'identifiant de la catégorie pour la requête des sections", async () => {
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
-      await adaptateurCmsCrisp.recupereSectionsCategorie('ID_CATEGORIE');
+      await adaptateurCmsCrisp.recupereSectionsCategorie('BLOG');
 
       const urlUtilisee = mockAxiosGet.mock.calls[0].arguments[0];
       assert.strictEqual(
         urlUtilisee,
-        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/locale/fr/category/ID_CATEGORIE/sections/0'
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/list/fr/articles/1?sub_path=BLOG'
       );
     });
 
