@@ -117,30 +117,30 @@ describe('Le CMS Crisp', () => {
         cheminPasse = chemin;
         return [
           {
-            chemin: 'un-slug',
+            chemin: 'UneCategorie/un-slug',
             slug: 'un-slug',
             titre: 'Un titre',
             section: { id: 'id_1', nom: 'uneSection' },
           },
           {
-            chemin: 'un-autre-slug',
+            chemin: 'UneCategorie/un-autre-slug',
             slug: 'un-autre-slug',
             titre: 'Un Deuxième titre',
             section: { id: 'id_2', nom: 'uneAutreSection' },
           },
         ];
       };
-      let idPasse;
+      let cheminArticlePasse;
       cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
-        idArticle
+        chemin
       ) => {
-        idPasse = idArticle;
+        cheminArticlePasse = chemin;
         return donneesParDefautAdaptateur;
       };
 
       await cmsCrisp.recupereArticleCategorie('un-slug', 'UneCategorie');
 
-      assert.equal(idPasse, 'un-slug');
+      assert.equal(cheminArticlePasse, 'UneCategorie/un-slug');
       assert.equal(cheminPasse, 'UneCategorie');
     });
 
