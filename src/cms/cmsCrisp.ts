@@ -19,8 +19,8 @@ export class CmsCrisp {
       new CrispMarkdown(contenuMarkdown, fabriqueAdaptateurHttp());
   }
 
-  async recupereArticle(id: string): Promise<PageHtmlCrisp> {
-    const article = await this.adaptateurCmsCrisp.recupereArticleParChemin(id);
+  async recupereArticle(chemin: string): Promise<PageHtmlCrisp> {
+    const article = await this.adaptateurCmsCrisp.recupereArticleParChemin(chemin);
     const { titre, contenuMarkdown, description } = article;
     let crispMarkdown = this.constructeurCrispMarkdown(contenuMarkdown);
     return {
@@ -41,7 +41,7 @@ export class CmsCrisp {
     if (!article) {
       throw new ErreurArticleCrispIntrouvable();
     }
-    const articleCrisp = await this.recupereArticle(article.slug);
+    const articleCrisp = await this.recupereArticle(article.chemin);
     return {
       ...articleCrisp,
       section: { id: article.section?.id, nom: article.section?.nom },
