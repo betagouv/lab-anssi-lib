@@ -6,6 +6,10 @@ export {
   type ArticleCrispAvecSection,
 } from './cms/types';
 export { CmsCrisp } from './cms/cmsCrisp';
+export {
+  type OptionsAssainissement,
+  optionsAssainissementParDefaut,
+} from './cms/crispMarkdown';
 export { AdaptateurProfilAnssi } from './profilAnssi/adaptateurProfilAnssi';
 
 export { ErreurArticleCrispIntrouvable } from './erreurs';
