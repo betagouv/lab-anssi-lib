@@ -18,7 +18,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
     const resultat = await crispMarkdown.versHTML();
 
-    assert.equal(resultat, "<div class='aide'>Une aide.</div>");
+    assert.equal(resultat, '<div class="aide">Une aide.</div>');
   });
 
   it('sait parser une "boite" de niveau "information"', async () => {
@@ -27,7 +27,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
     const resultat = await crispMarkdown.versHTML();
 
-    assert.equal(resultat, "<div class='information'>Une information.</div>");
+    assert.equal(resultat, '<div class="information">Une information.</div>');
   });
 
   it('sait parser une "boite" de niveau "alerte"', async () => {
@@ -36,7 +36,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
     const resultat = await crispMarkdown.versHTML();
 
-    assert.equal(resultat, "<div class='alerte'>Une alerte.</div>");
+    assert.equal(resultat, '<div class="alerte">Une alerte.</div>');
   });
 
   describe('concernant les vidéos', () => {
@@ -52,11 +52,11 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       assert.equal(
         resultat,
-        "<div class='conteneur-video'>" +
-          "<video controls crossorigin='anonymous'>" +
-          "<source src='http://url.video.mp4' type='video/mp4' />" +
-          "</video>" +
-          "<p class='legende'>LEGENDE</p>" +
+        '<div class="conteneur-video">' +
+          '<video controls crossorigin="anonymous">' +
+          '<source src="http://url.video.mp4" type="video/mp4" />' +
+          '</video>' +
+          '<p class="legende">LEGENDE</p>' +
           '</div>'
       );
     });
@@ -73,12 +73,12 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       assert.equal(
         resultat,
-        "<div class='conteneur-video'>" +
-          "<video controls crossorigin='anonymous'>" +
-          "<source src='http://url.video.mp4' type='video/mp4' />" +
-          "<track kind='captions' src='http://url.video.vtt' srclang='fr' label='Français' default />" +
+        '<div class="conteneur-video">' +
+          '<video controls crossorigin="anonymous">' +
+          '<source src="http://url.video.mp4" type="video/mp4" />' +
+          '<track kind="captions" src="http://url.video.vtt" srclang="fr" label="Français" default />' +
           '</video>' +
-          "<p class='legende'>LEGENDE</p>" +
+          '<p class="legende">LEGENDE</p>' +
           '</div>'
       );
     });
@@ -92,7 +92,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
     assert.equal(
       resultat,
-      '<p><img src="https://uneUrl.com" alt=""></p>\n' + '<hr>\n'
+      '<p><img src="https://uneUrl.com" alt="" /></p>\n' + '<hr />\n'
     );
   });
 
@@ -105,7 +105,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       assert.equal(
         resultat,
-        "<section><h2 id='un-titre'>Un titre</h2></section>"
+        '<section><h2 id="un-titre">Un titre</h2></section>'
       );
     });
 
@@ -117,7 +117,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       assert.equal(
         resultat,
-        "<section><h2 id='un-titre'>Un titre</h2><h4 id='un-autre-titre'>Un autre titre</h4></section>"
+        '<section><h2 id="un-titre">Un titre</h2><h4 id="un-autre-titre">Un autre titre</h4></section>'
       );
     });
 
@@ -129,7 +129,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       assert.equal(
         resultat,
-        "<section><h2 id='un-titre'>Un titre</h2></section>"
+        '<section><h2 id="un-titre">Un titre</h2></section>'
       );
     });
   });
@@ -143,7 +143,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       assert.equal(
         resultat,
-        "<p><a href='http://url.video' class='telechargement' target='_blank' rel='noreferrer nofollow'>Télécharger un document</a></p>\n"
+        '<p><a href="http://url.video" class="telechargement" target="_blank" rel="noreferrer nofollow">Télécharger un document</a></p>\n'
       );
     });
 
@@ -155,8 +155,60 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       assert.equal(
         resultat,
-        "<p><a href='http://url.video' target='_blank' rel='nofollow'>Un lien</a></p>\n"
+        '<p><a href="http://url.video" target="_blank" rel="nofollow">Un lien</a></p>\n'
       );
+    });
+  });
+
+  describe("concernant l'assainissement du HTML (XSS)", () => {
+    const versHTML = (entree: string) =>
+      fabriqueCrispMarkdown(entree).versHTML();
+
+    it('supprime les balises script', async () => {
+      const resultat = await versHTML('avant <script>alert(1)</script> après');
+
+      assert.ok(!resultat?.includes('script'));
+      assert.ok(!resultat?.includes('alert(1)'));
+    });
+
+    it('supprime les gestionnaires d’évènements', async () => {
+      const resultat = await versHTML('<img src="x" onerror="alert(1)">');
+
+      assert.ok(!resultat?.includes('onerror'));
+    });
+
+    it('supprime les liens "javascript:"', async () => {
+      const resultat = await versHTML('[x](javascript:alert(1))');
+
+      assert.ok(!resultat?.includes('javascript:'));
+    });
+
+    it("empêche l'injection d'attribut via une apostrophe dans une URL", async () => {
+      const resultat = await versHTML(
+        "[x](https://a.fr/'onmouseover='alert(1))"
+      );
+
+      assert.ok(!resultat?.includes('onmouseover='));
+    });
+
+    it("empêche l'injection d'attribut via une apostrophe dans un titre", async () => {
+      const resultat = await versHTML("# t' onmouseover='alert(1)");
+
+      assert.doesNotMatch(resultat ?? '', /<[^>]*\sonmouseover\s*=/);
+    });
+
+    it("empêche l'injection via la légende ou l'URL d'une vidéo", async () => {
+      const fauxAdaptateurHttp = {
+        ressourceExiste: async (url: string) => true,
+      };
+      const resultat = await fabriqueCrispMarkdown(
+        // eslint-disable-next-line no-template-curly-in-string
+        "${frame}[<script>alert(1)</script>](http://v.mp4' onerror='alert(1))\n",
+        fauxAdaptateurHttp
+      ).versHTML();
+
+      assert.ok(!resultat?.includes('<script'));
+      assert.doesNotMatch(resultat ?? '', /<[^>]*\sonerror\s*=/);
     });
   });
 
@@ -191,7 +243,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       assert.equal(
         resultat,
-        "<section><h2 id='un-titre'>Un titre</h2><p>contenu de la section</p>\n</section>"
+        '<section><h2 id="un-titre">Un titre</h2><p>contenu de la section</p>\n</section>'
       );
     });
   });

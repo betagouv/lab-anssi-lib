@@ -1,6 +1,31 @@
 import { Lexer, Marked, Parser, RendererObject, Tokens } from 'marked';
+import sanitizeHtml from 'sanitize-html';
 import { AdaptateurHttp } from './adaptateurHttp';
 import { EntreeTableDesMatieres } from './types';
+
+const optionsAssainissement: sanitizeHtml.IOptions = {
+  allowedTags: [
+    ...sanitizeHtml.defaults.allowedTags,
+    'section',
+    'h2',
+    'h3',
+    'h4',
+    'img',
+    'video',
+    'source',
+    'track',
+  ],
+  allowedAttributes: {
+    '*': ['class', 'id'],
+    a: ['href', 'target', 'rel'],
+    img: ['src', 'alt', 'title'],
+    video: ['controls', 'crossorigin'],
+    source: ['src', 'type'],
+    track: ['kind', 'src', 'srclang', 'label', 'default'],
+  },
+  allowedSchemes: ['http', 'https', 'mailto'],
+  selfClosing: [...sanitizeHtml.defaults.selfClosing, 'source', 'track'],
+};
 
 const extensionBoite = (regex: RegExp, nom: string, classe: string) => ({
   name: nom,
@@ -154,9 +179,10 @@ class CrispMarkdown {
       '\n---',
       '\n\n---'
     );
-    this.contenuHTML = (await this.marked.parse(
+    const htmlBrut = (await this.marked.parse(
       avecCorrectionLigneHorizontale
     )) as string;
+    this.contenuHTML = sanitizeHtml(htmlBrut, optionsAssainissement);
     this.aDejaParse = true;
   }
 
