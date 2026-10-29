@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { describe, it } from 'node:test';
 import { AdaptateurHttp, fabriqueAdaptateurHttp } from '../../src/cms/adaptateurHttp';
-import CrispMarkdown from '../../src/cms/crispMarkdown';
+import CrispMarkdown, { optionsAssainissementParDefaut } from '../../src/cms/crispMarkdown';
 
 const fabriqueCrispMarkdown = (entree: string, adaptateurHttp?: AdaptateurHttp) =>
   new CrispMarkdown(entree, adaptateurHttp ?? fabriqueAdaptateurHttp());
@@ -144,8 +144,17 @@ describe('Le convertisseur de Markdown Crisp', () => {
   });
 
   describe("concernant l'assainissement du HTML (XSS)", () => {
-    const versHTML = (entree: string) =>
-      fabriqueCrispMarkdown(entree).versHTML();
+    const versHTML = (entree: string) => fabriqueCrispMarkdown(entree).versHTML();
+
+    it("permet au consommateur de fournir ses propres options d'assainissement", async () => {
+      const crispMarkdown = new CrispMarkdown('texte <details>replié</details>', fabriqueAdaptateurHttp(), {
+        ...optionsAssainissementParDefaut,
+        balisesAutorisees: [...optionsAssainissementParDefaut.balisesAutorisees, 'details'],
+      });
+
+      assert.equal(await crispMarkdown.versHTML(), '<p>texte </p><details>replié</details><p></p>\n');
+      assert.ok(!(await fabriqueCrispMarkdown('<details>x</details>').versHTML())?.includes('<details>'));
+    });
 
     it('supprime les balises script', async () => {
       const resultat = await versHTML('avant <script>alert(1)</script> après');
@@ -167,9 +176,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
     });
 
     it("empêche l'injection d'attribut via une apostrophe dans une URL", async () => {
-      const resultat = await versHTML(
-        "[x](https://a.fr/'onmouseover='alert(1))"
-      );
+      const resultat = await versHTML("[x](https://a.fr/'onmouseover='alert(1))");
 
       assert.ok(!resultat?.includes('onmouseover='));
     });
