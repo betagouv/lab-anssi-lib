@@ -3,8 +3,15 @@ import sanitizeHtml from 'sanitize-html';
 import { AdaptateurHttp } from './adaptateurHttp';
 import { EntreeTableDesMatieres } from './types';
 
-const optionsAssainissement: sanitizeHtml.IOptions = {
-  allowedTags: [
+export type OptionsAssainissement = {
+  balisesAutorisees: string[];
+  attributsAutorises: Record<string, string[]>;
+  schemasUrlAutorises: string[];
+  balisesAutoFermantes: string[];
+};
+
+export const optionsAssainissementParDefaut: OptionsAssainissement = {
+  balisesAutorisees: [
     ...sanitizeHtml.defaults.allowedTags,
     'section',
     'h2',
@@ -15,7 +22,7 @@ const optionsAssainissement: sanitizeHtml.IOptions = {
     'source',
     'track',
   ],
-  allowedAttributes: {
+  attributsAutorises: {
     '*': ['class', 'id'],
     a: ['href', 'target', 'rel'],
     img: ['src', 'alt', 'title'],
@@ -23,9 +30,22 @@ const optionsAssainissement: sanitizeHtml.IOptions = {
     source: ['src', 'type'],
     track: ['kind', 'src', 'srclang', 'label', 'default'],
   },
-  allowedSchemes: ['http', 'https', 'mailto'],
-  selfClosing: [...sanitizeHtml.defaults.selfClosing, 'source', 'track'],
+  schemasUrlAutorises: ['http', 'https', 'mailto'],
+  balisesAutoFermantes: [
+    ...sanitizeHtml.defaults.selfClosing,
+    'source',
+    'track',
+  ],
 };
+
+const versOptionsSanitizeHtml = (
+  options: OptionsAssainissement
+): sanitizeHtml.IOptions => ({
+  allowedTags: options.balisesAutorisees,
+  allowedAttributes: options.attributsAutorises,
+  allowedSchemes: options.schemasUrlAutorises,
+  selfClosing: options.balisesAutoFermantes,
+});
 
 const extensionBoite = (regex: RegExp, nom: string, classe: string) => ({
   name: nom,
@@ -62,7 +82,8 @@ class CrispMarkdown {
 
   constructor(
     private contenuMarkdown: string,
-    adaptateurHttp: AdaptateurHttp
+    adaptateurHttp: AdaptateurHttp,
+    private optionsAssainissement: OptionsAssainissement = optionsAssainissementParDefaut
   ) {
     const boiteAide = extensionBoite(/^\|([^|\n]+)/, 'boiteAide', 'aide');
     const boiteInfo = extensionBoite(
@@ -182,7 +203,10 @@ class CrispMarkdown {
     const htmlBrut = (await this.marked.parse(
       avecCorrectionLigneHorizontale
     )) as string;
-    this.contenuHTML = sanitizeHtml(htmlBrut, optionsAssainissement);
+    this.contenuHTML = sanitizeHtml(
+      htmlBrut,
+      versOptionsSanitizeHtml(this.optionsAssainissement)
+    );
     this.aDejaParse = true;
   }
 

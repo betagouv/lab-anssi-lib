@@ -1,7 +1,10 @@
 import { ErreurArticleCrispIntrouvable } from '../erreurs';
 import { AdaptateurCmsCrisp, ResumeArticleCrisp } from './adaptateurCmsCrisp';
 import { fabriqueAdaptateurHttp } from './adaptateurHttp';
-import CrispMarkdown from './crispMarkdown';
+import CrispMarkdown, {
+  OptionsAssainissement,
+  optionsAssainissementParDefaut,
+} from './crispMarkdown';
 import {
   ArticleCrispAvecSection,
   PageHtmlCrisp,
@@ -13,14 +16,23 @@ export class CmsCrisp {
   adaptateurCmsCrisp: AdaptateurCmsCrisp;
   constructeurCrispMarkdown: (contenuMarkdown: string) => CrispMarkdown;
 
-  constructor(idSite: string, cleApi: string) {
+  constructor(
+    idSite: string,
+    cleApi: string,
+    optionsAssainissement: OptionsAssainissement = optionsAssainissementParDefaut
+  ) {
     this.adaptateurCmsCrisp = new AdaptateurCmsCrisp(idSite, cleApi);
     this.constructeurCrispMarkdown = (contenuMarkdown: string) =>
-      new CrispMarkdown(contenuMarkdown, fabriqueAdaptateurHttp());
+      new CrispMarkdown(
+        contenuMarkdown,
+        fabriqueAdaptateurHttp(),
+        optionsAssainissement
+      );
   }
 
   async recupereArticle(chemin: string): Promise<PageHtmlCrisp> {
-    const article = await this.adaptateurCmsCrisp.recupereArticleParChemin(chemin);
+    const article =
+      await this.adaptateurCmsCrisp.recupereArticleParChemin(chemin);
     const { titre, contenuMarkdown, description } = article;
     let crispMarkdown = this.constructeurCrispMarkdown(contenuMarkdown);
     return {
