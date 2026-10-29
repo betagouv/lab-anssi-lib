@@ -35,6 +35,7 @@
   "devDependencies": {
     "@types/express": "5.0.6",
     "@types/node": "~22.14.1",
+    "@types/sanitize-html": "^2.16.2",
     "@types/supertest": "~7.2.0",
     "prettier": "~3.5.3",
     "supertest": "~7.2.0",
@@ -42,12 +43,13 @@
     "typescript": "~5.8.3"
   },
   "dependencies": {
+    "axios": "~1.20.0",
     "express-ipfilter": "~1.4.0",
     "express-rate-limit": "~8.7.0",
     "forwarded-parse": "~2.1.2",
-    "axios": "~1.20.0",
     "html-entities": "~2.6.0",
-    "marked": "~13.0.3"
+    "marked": "~13.0.3",
+    "sanitize-html": "~2.17.7"
   },
   "peerDependencies": {
     "express": "~5.2.1"
