@@ -1,6 +1,51 @@
 import { Lexer, Marked, Parser, RendererObject, Tokens } from 'marked';
+import sanitizeHtml from 'sanitize-html';
 import { AdaptateurHttp } from './adaptateurHttp';
 import { EntreeTableDesMatieres } from './types';
+
+export type OptionsAssainissement = {
+  balisesAutorisees: string[];
+  attributsAutorises: Record<string, string[]>;
+  schemasUrlAutorises: string[];
+  balisesAutoFermantes: string[];
+};
+
+export const optionsAssainissementParDefaut: OptionsAssainissement = {
+  balisesAutorisees: [
+    ...sanitizeHtml.defaults.allowedTags,
+    'section',
+    'h2',
+    'h3',
+    'h4',
+    'img',
+    'video',
+    'source',
+    'track',
+  ],
+  attributsAutorises: {
+    '*': ['class', 'id'],
+    a: ['href', 'target', 'rel'],
+    img: ['src', 'alt', 'title'],
+    video: ['controls', 'crossorigin'],
+    source: ['src', 'type'],
+    track: ['kind', 'src', 'srclang', 'label', 'default'],
+  },
+  schemasUrlAutorises: ['http', 'https', 'mailto'],
+  balisesAutoFermantes: [
+    ...sanitizeHtml.defaults.selfClosing,
+    'source',
+    'track',
+  ],
+};
+
+const versOptionsSanitizeHtml = (
+  options: OptionsAssainissement
+): sanitizeHtml.IOptions => ({
+  allowedTags: options.balisesAutorisees,
+  allowedAttributes: options.attributsAutorises,
+  allowedSchemes: options.schemasUrlAutorises,
+  selfClosing: options.balisesAutoFermantes,
+});
 
 const extensionBoite = (regex: RegExp, nom: string, classe: string) => ({
   name: nom,
@@ -37,7 +82,8 @@ class CrispMarkdown {
 
   constructor(
     private contenuMarkdown: string,
-    adaptateurHttp: AdaptateurHttp
+    adaptateurHttp: AdaptateurHttp,
+    private optionsAssainissement: OptionsAssainissement = optionsAssainissementParDefaut
   ) {
     const boiteAide = extensionBoite(/^\|([^|\n]+)/, 'boiteAide', 'aide');
     const boiteInfo = extensionBoite(
@@ -154,9 +200,13 @@ class CrispMarkdown {
       '\n---',
       '\n\n---'
     );
-    this.contenuHTML = (await this.marked.parse(
+    const htmlBrut = (await this.marked.parse(
       avecCorrectionLigneHorizontale
     )) as string;
+    this.contenuHTML = sanitizeHtml(
+      htmlBrut,
+      versOptionsSanitizeHtml(this.optionsAssainissement)
+    );
     this.aDejaParse = true;
   }
 

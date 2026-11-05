@@ -184,7 +184,7 @@ describe('Le CMS Crisp', () => {
 
       assert.deepEqual(resultat, {
         titre: 'Un titre',
-        contenu: "<section><h2 id='un-contenu'>Un contenu</h2></section>",
+        contenu: "<section><h2 id=\"un-contenu\">Un contenu</h2></section>",
         description: 'Une description',
         tableDesMatieres: [
           { texte: 'Un contenu', id: 'un-contenu', profondeur: 2 },
