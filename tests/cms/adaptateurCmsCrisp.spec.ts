@@ -42,7 +42,7 @@ describe("L'adaptateur CMS Crisp", () => {
       });
     });
 
-    it('utilise Axios pour faire un appel API', async () => {
+    it('utilise Axios pour faire un appel API en ajoutant .md au SLUG demandé', async () => {
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
       await adaptateurCmsCrisp.recupereArticleParChemin('blog/SLUG_ARTICLE');
@@ -53,7 +53,7 @@ describe("L'adaptateur CMS Crisp", () => {
       const deuxiemeUrlUtilisee = mockAxiosGet.mock.calls[1].arguments[0];
       assert.strictEqual(
         premiereUrlUtilisee,
-        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/metadata/fr/articles/blog/SLUG_ARTICLE'
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/metadata/fr/articles/blog/SLUG_ARTICLE.md'
       );
       assert.deepEqual(headerUtilise, {
         'X-Crisp-Tier': 'plugin',
@@ -61,20 +61,20 @@ describe("L'adaptateur CMS Crisp", () => {
       });
       assert.strictEqual(
         deuxiemeUrlUtilisee,
-        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/content/fr/articles/blog/SLUG_ARTICLE'
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/content/fr/articles/blog/SLUG_ARTICLE.md'
       );
     });
 
     it("retourne le contenu de l'article", async () => {
       reponsesProgrammees.set(
-        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/metadata/fr/articles/blog/SLUG_ARTICLE',
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/metadata/fr/articles/blog/SLUG_ARTICLE.md',
         {
           title: 'Un Titre',
           description: 'Une description',
         }
       );
       reponsesProgrammees.set(
-        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/content/fr/articles/blog/SLUG_ARTICLE',
+        'https://api.crisp.chat/v1/website/ID_SITE/helpdesk/tree/content/fr/articles/blog/SLUG_ARTICLE.md',
         {
           content: '# Un contenu markdown',
         }
@@ -130,12 +130,12 @@ describe("L'adaptateur CMS Crisp", () => {
       );
     });
 
-    it('retourne le resumé des articles', async () => {
+    it('retourne le resumé des articles en retirant .md du slug', async () => {
       mockAxiosGet.mock.mockImplementationOnce(async () => ({
         data: {
           data: [
             {
-              slug: 'SLUG_ARTICLE',
+              slug: 'SLUG_ARTICLE.md',
               state: {
                 published: true,
               },
@@ -161,7 +161,7 @@ describe("L'adaptateur CMS Crisp", () => {
         data: {
           data: [
             {
-              slug: 'SLUG_ARTICLE',
+              slug: 'SLUG_ARTICLE.md',
               state: {
                 published: true,
               },
@@ -178,7 +178,7 @@ describe("L'adaptateur CMS Crisp", () => {
           data: {
             data: [
               {
-                slug: 'SLUG_ARTICLE',
+                slug: 'SLUG_ARTICLE.md',
                 state: {
                   published: true,
                 },
@@ -252,7 +252,7 @@ describe("L'adaptateur CMS Crisp", () => {
           data: {
             data: [
               {
-                slug: 'SLUG_ARTICLE_SECTION_1',
+                slug: 'SLUG_ARTICLE_SECTION_1.md',
                 state: {
                   published: true,
                 },
@@ -287,7 +287,7 @@ describe("L'adaptateur CMS Crisp", () => {
         data: {
           data: [
             { slug: 'ID_SECTION', title: 'NOM_SECTION', type: 'directory' },
-            { slug: 'ID_ARTICLE', title: 'NOM_ARTICLE', type: 'file' },
+            { slug: 'ID_ARTICLE.md', title: 'NOM_ARTICLE', type: 'file' },
           ],
         },
       }));

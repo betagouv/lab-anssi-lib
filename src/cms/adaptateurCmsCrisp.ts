@@ -48,11 +48,11 @@ export class AdaptateurCmsCrisp {
     const reponseMetadata = await axios.get<{
       data: { title: string; description: string | null };
     }>(
-      `${this.urlBase}helpdesk/tree/metadata/fr/articles/${chemin}`,
+      `${this.urlBase}helpdesk/tree/metadata/fr/articles/${chemin}.md`,
       this.enteteCrisp
     );
     const reponseContenu = await axios.get<{ data: { content: string } }>(
-      `${this.urlBase}helpdesk/tree/content/fr/articles/${chemin}`,
+      `${this.urlBase}helpdesk/tree/content/fr/articles/${chemin}.md`,
       this.enteteCrisp
     );
     const { description, title } = reponseMetadata.data.data;
@@ -123,12 +123,15 @@ export class AdaptateurCmsCrisp {
         ...donnees,
         ...reponse.data.data
           .filter((entite) => entite.type === 'file' && entite.state.published)
-          .map((a) => ({
-            slug: a.slug,
-            titre: a.title,
-            section,
-            chemin: `${chemin}/${a.slug}`,
-          })),
+          .map((a) => {
+            let slug = a.slug.replace(/.md$/, '');
+            return {
+              slug,
+              titre: a.title,
+              section,
+              chemin: `${chemin}/${slug}`,
+            };
+          }),
       ];
 
       const sousArticles = await Promise.all(
