@@ -1,15 +1,10 @@
 import assert from 'assert';
 import { describe, it } from 'node:test';
-import {
-  AdaptateurHttp,
-  fabriqueAdaptateurHttp,
-} from '../../src/cms/adaptateurHttp';
+import { AdaptateurHttp, fabriqueAdaptateurHttp } from '../../src/cms/adaptateurHttp';
 import CrispMarkdown from '../../src/cms/crispMarkdown';
 
-const fabriqueCrispMarkdown = (
-  entree: string,
-  adaptateurHttp?: AdaptateurHttp
-) => new CrispMarkdown(entree, adaptateurHttp ?? fabriqueAdaptateurHttp());
+const fabriqueCrispMarkdown = (entree: string, adaptateurHttp?: AdaptateurHttp) =>
+  new CrispMarkdown(entree, adaptateurHttp ?? fabriqueAdaptateurHttp());
 
 describe('Le convertisseur de Markdown Crisp', () => {
   it('sait parser une "boite" de niveau "aide"', async () => {
@@ -55,7 +50,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
         "<div class='conteneur-video'>" +
           "<video controls crossorigin='anonymous'>" +
           "<source src='http://url.video.mp4' type='video/mp4' />" +
-          "</video>" +
+          '</video>' +
           "<p class='legende'>LEGENDE</p>" +
           '</div>'
       );
@@ -90,10 +85,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
     const resultat = await crispMarkdown.versHTML();
 
-    assert.equal(
-      resultat,
-      '<p><img src="https://uneUrl.com" alt=""></p>\n' + '<hr>\n'
-    );
+    assert.equal(resultat, '<p><img src="https://uneUrl.com" alt=""></p>\n' + '<hr>\n');
   });
 
   describe('concernant les titres', () => {
@@ -103,10 +95,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       const resultat = await crispMarkdown.versHTML();
 
-      assert.equal(
-        resultat,
-        "<section><h2 id='un-titre'>Un titre</h2></section>"
-      );
+      assert.equal(resultat, "<section><h2 id='un-titre'>Un titre</h2></section>");
     });
 
     it('contrains les niveaux de hierarchie entre 2 et 4', async () => {
@@ -127,10 +116,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       const resultat = await crispMarkdown.versHTML();
 
-      assert.equal(
-        resultat,
-        "<section><h2 id='un-titre'>Un titre</h2></section>"
-      );
+      assert.equal(resultat, "<section><h2 id='un-titre'>Un titre</h2></section>");
     });
   });
 
@@ -153,10 +139,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       const resultat = await crispMarkdown.versHTML();
 
-      assert.equal(
-        resultat,
-        "<p><a href='http://url.video' target='_blank' rel='nofollow'>Un lien</a></p>\n"
-      );
+      assert.equal(resultat, "<p><a href='http://url.video' target='_blank' rel='nofollow'>Un lien</a></p>\n");
     });
   });
 
@@ -189,10 +172,7 @@ describe('Le convertisseur de Markdown Crisp', () => {
 
       const resultat = await crispMarkdown.versHTML();
 
-      assert.equal(
-        resultat,
-        "<section><h2 id='un-titre'>Un titre</h2><p>contenu de la section</p>\n</section>"
-      );
+      assert.equal(resultat, "<section><h2 id='un-titre'>Un titre</h2><p>contenu de la section</p>\n</section>");
     });
   });
 });

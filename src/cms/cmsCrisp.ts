@@ -2,12 +2,7 @@ import { ErreurArticleCrispIntrouvable } from '../erreurs';
 import { AdaptateurCmsCrisp, ResumeArticleCrisp } from './adaptateurCmsCrisp';
 import { fabriqueAdaptateurHttp } from './adaptateurHttp';
 import CrispMarkdown from './crispMarkdown';
-import {
-  ArticleCrispAvecSection,
-  PageHtmlCrisp,
-  ResumeArticleCrispAvecSlug,
-  SectionCrisp,
-} from './types';
+import { ArticleCrispAvecSection, PageHtmlCrisp, ResumeArticleCrispAvecSlug, SectionCrisp } from './types';
 
 export class CmsCrisp {
   adaptateurCmsCrisp: AdaptateurCmsCrisp;
@@ -31,12 +26,8 @@ export class CmsCrisp {
     };
   }
 
-  async recupereArticleCategorie(
-    slug: string,
-    idCategorie: string
-  ): Promise<ArticleCrispAvecSection> {
-    const articles =
-      await this.adaptateurCmsCrisp.recupereArticlesParChemin(idCategorie);
+  async recupereArticleCategorie(slug: string, idCategorie: string): Promise<ArticleCrispAvecSection> {
+    const articles = await this.adaptateurCmsCrisp.recupereArticlesParChemin(idCategorie);
     const article = articles.find((a) => a.slug === slug);
     if (!article) {
       throw new ErreurArticleCrispIntrouvable();
@@ -52,9 +43,7 @@ export class CmsCrisp {
     return this.adaptateurCmsCrisp.recupereSectionsParChemin(chemin);
   }
 
-  async recupereArticlesParChemin(
-    chemin: string
-  ): Promise<ResumeArticleCrispAvecSlug[]> {
+  async recupereArticlesParChemin(chemin: string): Promise<ResumeArticleCrispAvecSlug[]> {
     return await this.adaptateurCmsCrisp.recupereArticlesParChemin(chemin);
   }
 }

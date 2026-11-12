@@ -42,15 +42,10 @@ export class AdaptateurCmsCrisp {
     };
   }
 
-  recupereArticleParChemin = async (
-    chemin: string
-  ): Promise<ArticleMarkdownCrisp> => {
+  recupereArticleParChemin = async (chemin: string): Promise<ArticleMarkdownCrisp> => {
     const reponseMetadata = await axios.get<{
       data: { title: string; description: string | null };
-    }>(
-      `${this.urlBase}helpdesk/tree/metadata/fr/articles/${chemin}.md`,
-      this.enteteCrisp
-    );
+    }>(`${this.urlBase}helpdesk/tree/metadata/fr/articles/${chemin}.md`, this.enteteCrisp);
     const reponseContenu = await axios.get<{ data: { content: string } }>(
       `${this.urlBase}helpdesk/tree/content/fr/articles/${chemin}.md`,
       this.enteteCrisp
@@ -63,15 +58,11 @@ export class AdaptateurCmsCrisp {
     };
   };
 
-  recupereArticlesParChemin = async (
-    chemin: string
-  ): Promise<ResumeArticleCrisp[]> => {
+  recupereArticlesParChemin = async (chemin: string): Promise<ResumeArticleCrisp[]> => {
     return await this.recupereArticleParCheminRecursivement(chemin);
   };
 
-  recupereSectionsParChemin = async (
-    chemin: string
-  ): Promise<SectionCrisp[]> => {
+  recupereSectionsParChemin = async (chemin: string): Promise<SectionCrisp[]> => {
     const params = new URLSearchParams({
       sub_path: chemin,
     });
@@ -102,10 +93,7 @@ export class AdaptateurCmsCrisp {
     return donnees;
   };
 
-  private async recupereArticleParCheminRecursivement(
-    chemin: string,
-    section?: { id: string; nom: string }
-  ) {
+  private async recupereArticleParCheminRecursivement(chemin: string, section?: { id: string; nom: string }) {
     const params = new URLSearchParams({
       sub_path: chemin,
     });
@@ -138,13 +126,10 @@ export class AdaptateurCmsCrisp {
         reponse.data.data
           .filter((entité) => entité.type === 'directory')
           .map((dossier) =>
-            this.recupereArticleParCheminRecursivement(
-              chemin + '/' + dossier.slug,
-              {
-                id: dossier.slug,
-                nom: dossier.title,
-              }
-            )
+            this.recupereArticleParCheminRecursivement(chemin + '/' + dossier.slug, {
+              id: dossier.slug,
+              nom: dossier.title,
+            })
           )
       );
 

@@ -23,9 +23,7 @@ const extensionBoite = (regex: RegExp, nom: string, classe: string) => ({
     return false;
   },
   renderer(this: { parser: Parser }, token: Tokens.Generic) {
-    return `<div class='${classe}'>${this.parser.parseInline(
-      token.tokens!
-    )}</div>`;
+    return `<div class='${classe}'>${this.parser.parseInline(token.tokens!)}</div>`;
   },
 });
 
@@ -40,16 +38,8 @@ class CrispMarkdown {
     adaptateurHttp: AdaptateurHttp
   ) {
     const boiteAide = extensionBoite(/^\|([^|\n]+)/, 'boiteAide', 'aide');
-    const boiteInfo = extensionBoite(
-      /^\|\|([^||\n]+)/,
-      'boiteInfo',
-      'information'
-    );
-    const boiteAlerte = extensionBoite(
-      /^\|\|\|([^|||\n]+)/,
-      'boiteAlerte',
-      'alerte'
-    );
+    const boiteInfo = extensionBoite(/^\|\|([^||\n]+)/, 'boiteInfo', 'information');
+    const boiteAlerte = extensionBoite(/^\|\|\|([^|||\n]+)/, 'boiteAlerte', 'alerte');
 
     const regexVideo = /^\${frame}\[(.*)\]\((.*)\)\n/;
     const video = {
@@ -139,24 +129,16 @@ class CrispMarkdown {
       walkTokens: async (token: Tokens.Generic) => {
         if (token.type === 'video') {
           const lienPisteSousTitres = token.text.replace('.mp4', '.vtt');
-          const pisteSousTitresExiste =
-            await adaptateurHttp.ressourceExiste(lienPisteSousTitres);
-          token.lienPisteSousTitres = pisteSousTitresExiste
-            ? lienPisteSousTitres
-            : undefined;
+          const pisteSousTitresExiste = await adaptateurHttp.ressourceExiste(lienPisteSousTitres);
+          token.lienPisteSousTitres = pisteSousTitresExiste ? lienPisteSousTitres : undefined;
         }
       },
     });
   }
 
   async parseLeMarkdown() {
-    const avecCorrectionLigneHorizontale = this.contenuMarkdown.replaceAll(
-      '\n---',
-      '\n\n---'
-    );
-    this.contenuHTML = (await this.marked.parse(
-      avecCorrectionLigneHorizontale
-    )) as string;
+    const avecCorrectionLigneHorizontale = this.contenuMarkdown.replaceAll('\n---', '\n\n---');
+    this.contenuHTML = (await this.marked.parse(avecCorrectionLigneHorizontale)) as string;
     this.aDejaParse = true;
   }
 

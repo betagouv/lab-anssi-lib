@@ -1,10 +1,7 @@
 import assert from 'assert';
 import axios, { HttpStatusCode } from 'axios';
 import { afterEach, beforeEach, describe, it, Mock } from 'node:test';
-import {
-  AdaptateurCmsCrisp,
-  ResumesArticlesAPI,
-} from '../../src/cms/adaptateurCmsCrisp';
+import { AdaptateurCmsCrisp, ResumesArticlesAPI } from '../../src/cms/adaptateurCmsCrisp';
 
 describe("L'adaptateur CMS Crisp", () => {
   let mockAxiosGet: Mock<any>;
@@ -81,8 +78,7 @@ describe("L'adaptateur CMS Crisp", () => {
       );
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
-      const reponse =
-        await adaptateurCmsCrisp.recupereArticleParChemin('blog/SLUG_ARTICLE');
+      const reponse = await adaptateurCmsCrisp.recupereArticleParChemin('blog/SLUG_ARTICLE');
       assert.equal(reponse.titre, 'Un Titre');
       assert.equal(reponse.description, 'Une description');
       assert.equal(reponse.contenuMarkdown, '# Un contenu markdown');
@@ -149,8 +145,7 @@ describe("L'adaptateur CMS Crisp", () => {
 
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
-      const reponse =
-        await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
+      const reponse = await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
       assert.equal(reponse[0].slug, 'SLUG_ARTICLE');
       assert.equal(reponse[0].titre, 'TITRE_ARTICLE');
       assert.equal(reponse[0].chemin, 'CHEMIN_CATEGORIE/SLUG_ARTICLE');
@@ -194,8 +189,7 @@ describe("L'adaptateur CMS Crisp", () => {
 
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
-      const reponse =
-        await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
+      const reponse = await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
 
       assert.equal(mockAxiosGet.mock.callCount(), 2);
       assert.equal(
@@ -233,8 +227,7 @@ describe("L'adaptateur CMS Crisp", () => {
       }));
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
-      const reponse =
-        await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
+      const reponse = await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
       assert.equal(reponse.length, 0);
     });
 
@@ -266,14 +259,10 @@ describe("L'adaptateur CMS Crisp", () => {
         1
       );
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
-      const reponse =
-        await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
+      const reponse = await adaptateurCmsCrisp.recupereArticlesParChemin('CHEMIN_CATEGORIE');
       assert.equal(reponse.length, 2);
       assert.equal(reponse[1].slug, 'SLUG_ARTICLE_SECTION_1');
-      assert.equal(
-        reponse[1].chemin,
-        'CHEMIN_CATEGORIE/SLUG_SECTION/SLUG_ARTICLE_SECTION_1'
-      );
+      assert.equal(reponse[1].chemin, 'CHEMIN_CATEGORIE/SLUG_SECTION/SLUG_ARTICLE_SECTION_1');
       assert.deepEqual(reponse[1].section, {
         id: 'SLUG_SECTION',
         nom: 'TITRE_SECTION',
@@ -308,8 +297,7 @@ describe("L'adaptateur CMS Crisp", () => {
     it('retourne les sections', async () => {
       const adaptateurCmsCrisp = new AdaptateurCmsCrisp('ID_SITE', 'CLE_API');
 
-      const reponse =
-        await adaptateurCmsCrisp.recupereSectionsParChemin('ID_CATEGORIE');
+      const reponse = await adaptateurCmsCrisp.recupereSectionsParChemin('ID_CATEGORIE');
 
       assert.equal(reponse[0].id, 'ID_SECTION');
       assert.equal(reponse[0].nom, 'NOM_SECTION');

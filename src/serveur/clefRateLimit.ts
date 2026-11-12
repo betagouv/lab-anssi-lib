@@ -20,9 +20,6 @@ export const fabriqueCleRateLimit =
       }
     }
 
-    const adresseIpNormalisee = (adresseIp ?? 'unknown').replace(
-      /^\[(.*)\]$/,
-      '$1'
-    );
+    const adresseIpNormalisee = (adresseIp ?? 'unknown').replace(/^\[(.*)\]$/, '$1');
     return ipKeyGenerator(adresseIpNormalisee);
   };
