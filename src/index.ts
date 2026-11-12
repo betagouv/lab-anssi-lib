@@ -16,3 +16,5 @@ export {
   creeServeurLab,
   configurationServeurLabEnvironnement,
 } from './serveur/serveurLab';
+
+export { Telephone } from './telephone';
