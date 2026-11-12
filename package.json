@@ -14,7 +14,8 @@
   "scripts": {
     "build": "tsc",
     "test": "node --require tsx/cjs --test './tests/**/*.spec.ts'",
-    "preinstall": "npx only-allow@1.2.2 pnpm"
+    "preinstall": "npx only-allow@1.2.2 pnpm",
+    "format": "prettier --write ."
   },
   "files": [
     "dist"

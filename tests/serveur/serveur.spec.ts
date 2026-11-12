@@ -21,25 +21,19 @@ describe('Le serveur', () => {
     });
 
     it('en rejettant les IPs non autorisées', async () => {
-      const response = await request(app)
-        .get('/')
-        .set('X-Forwarded-For', `${ipClient}`);
+      const response = await request(app).get('/').set('X-Forwarded-For', `${ipClient}`);
 
       assert.equal(response.status, 403);
     });
 
     it('en acceptant les IPs autorisées', async () => {
-      const response = await request(app)
-        .get('/')
-        .set('X-Forwarded-For', `${ipClient}, ${ipWaf}`);
+      const response = await request(app).get('/').set('X-Forwarded-For', `${ipClient}, ${ipWaf}`);
 
       assert.equal(response.status, 200);
     });
 
     it("en rejetant les attaquants qui tentent de bidouiller l'en-tête X-Forwarded_For", async () => {
-      const response = await request(app)
-        .get('/')
-        .set('X-Forwarded-For', `${ipWaf}, ${ipClient}`);
+      const response = await request(app).get('/').set('X-Forwarded-For', `${ipWaf}, ${ipClient}`);
 
       assert.equal(response.status, 403);
     });
@@ -59,20 +53,14 @@ describe('Le serveur', () => {
 
     it("lorsqu'un utilisateur fait trop de requêtes", async () => {
       await request(app).get('/').set('X-Forwarded-For', `${ipClient}`);
-      const response = await request(app)
-        .get('/')
-        .set('X-Forwarded-For', `${ipClient}`);
+      const response = await request(app).get('/').set('X-Forwarded-For', `${ipClient}`);
 
       assert.equal(response.status, 429);
     });
 
     it("mais pas lorsque les requêtes Forwarded viennent d'utilisateurs différents", async () => {
-      await request(app)
-        .get('/')
-        .set('Forwarded', `for=${ipClient};proto=https`);
-      const response = await request(app)
-        .get('/')
-        .set('Forwarded', `for=${ipAutreClient};proto=https`);
+      await request(app).get('/').set('Forwarded', `for=${ipClient};proto=https`);
+      const response = await request(app).get('/').set('Forwarded', `for=${ipAutreClient};proto=https`);
 
       assert.equal(response.status, 200);
     });

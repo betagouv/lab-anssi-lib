@@ -11,8 +11,7 @@ class MockCrispMarkdown extends CrispMarkdown {
   }
 
   versHTML = async () => this.contenu + '-en-html';
-  tableDesMatieres = async () =>
-    this.contenu.split(';') as unknown as EntreeTableDesMatieres[];
+  tableDesMatieres = async () => this.contenu.split(';') as unknown as EntreeTableDesMatieres[];
 }
 
 describe('Le CMS Crisp', () => {
@@ -28,29 +27,19 @@ describe('Le CMS Crisp', () => {
     const adaptateurCmsCrisp = cmsCrisp.adaptateurCmsCrisp;
 
     assert.notEqual(adaptateurCmsCrisp, undefined);
-    assert.equal(
-      adaptateurCmsCrisp.urlBase,
-      `https://api.crisp.chat/v1/website/id-site/`
-    );
-    assert.equal(
-      adaptateurCmsCrisp.enteteCrisp.headers['Authorization'],
-      'Basic Y2xlLWFwaQ=='
-    );
+    assert.equal(adaptateurCmsCrisp.urlBase, `https://api.crisp.chat/v1/website/id-site/`);
+    assert.equal(adaptateurCmsCrisp.enteteCrisp.headers['Authorization'], 'Basic Y2xlLWFwaQ==');
   });
 
   describe("sur demande de récupération d'article", () => {
     let cmsCrisp: CmsCrisp;
     beforeEach(() => {
       cmsCrisp = new CmsCrisp('id-site', 'cle-api');
-      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
-        _: string
-      ) => donneesParDefautAdaptateur;
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (_: string) => donneesParDefautAdaptateur;
     });
 
     it('récupère le titre et la description', async () => {
-      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
-        id: string
-      ) =>
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (id: string) =>
         id === '23'
           ? {
               contenuMarkdown: '',
@@ -66,12 +55,9 @@ describe('Le CMS Crisp', () => {
     });
 
     it('récupère le markdown converti en html', async () => {
-      cmsCrisp.constructeurCrispMarkdown = (contenuMarkdown) =>
-        new MockCrispMarkdown(contenuMarkdown);
+      cmsCrisp.constructeurCrispMarkdown = (contenuMarkdown) => new MockCrispMarkdown(contenuMarkdown);
 
-      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
-        _: string
-      ) => ({
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (_: string) => ({
         contenuMarkdown: 'contenu markdown',
         titre: '',
         description: '',
@@ -83,12 +69,9 @@ describe('Le CMS Crisp', () => {
     });
 
     it('récupère la table des matières', async () => {
-      cmsCrisp.constructeurCrispMarkdown = (contenuMarkdown) =>
-        new MockCrispMarkdown(contenuMarkdown);
+      cmsCrisp.constructeurCrispMarkdown = (contenuMarkdown) => new MockCrispMarkdown(contenuMarkdown);
 
-      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
-        _: string
-      ) => ({
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (_: string) => ({
         contenuMarkdown: 'Partie 1;Partie 2',
         titre: 'titre',
         description: 'description',
@@ -104,16 +87,12 @@ describe('Le CMS Crisp', () => {
     let cmsCrisp: CmsCrisp;
     beforeEach(() => {
       cmsCrisp = new CmsCrisp('id-site', 'cle-api');
-      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
-        _: string
-      ) => donneesParDefautAdaptateur;
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (_: string) => donneesParDefautAdaptateur;
     });
 
     it("récupère l'article selon son slug", async () => {
       let cheminPasse;
-      cmsCrisp.adaptateurCmsCrisp.recupereArticlesParChemin = async (
-        chemin
-      ) => {
+      cmsCrisp.adaptateurCmsCrisp.recupereArticlesParChemin = async (chemin) => {
         cheminPasse = chemin;
         return [
           {
@@ -131,9 +110,7 @@ describe('Le CMS Crisp', () => {
         ];
       };
       let cheminArticlePasse;
-      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (
-        chemin
-      ) => {
+      cmsCrisp.adaptateurCmsCrisp.recupereArticleParChemin = async (chemin) => {
         cheminArticlePasse = chemin;
         return donneesParDefautAdaptateur;
       };
@@ -154,10 +131,7 @@ describe('Le CMS Crisp', () => {
       ];
 
       await assert.rejects(
-        cmsCrisp.recupereArticleCategorie(
-          'un-slug-introuvable',
-          'UneCategorie'
-        ),
+        cmsCrisp.recupereArticleCategorie('un-slug-introuvable', 'UneCategorie'),
         ErreurArticleCrispIntrouvable
       );
     });
@@ -177,18 +151,13 @@ describe('Le CMS Crisp', () => {
         },
       ];
 
-      const resultat = await cmsCrisp.recupereArticleCategorie(
-        'un-slug',
-        'UneCategorie'
-      );
+      const resultat = await cmsCrisp.recupereArticleCategorie('un-slug', 'UneCategorie');
 
       assert.deepEqual(resultat, {
         titre: 'Un titre',
         contenu: "<section><h2 id='un-contenu'>Un contenu</h2></section>",
         description: 'Une description',
-        tableDesMatieres: [
-          { texte: 'Un contenu', id: 'un-contenu', profondeur: 2 },
-        ],
+        tableDesMatieres: [{ texte: 'Un contenu', id: 'un-contenu', profondeur: 2 }],
         section: {
           id: 'id_1',
           nom: 'uneSection',
@@ -200,12 +169,8 @@ describe('Le CMS Crisp', () => {
   describe("sur demande des sections d'une catégorie", () => {
     it("délègue à l'adaptateur la récupération des sections", async () => {
       const cmsCrisp = new CmsCrisp('id-site', 'cle-api');
-      cmsCrisp.adaptateurCmsCrisp.recupereSectionsParChemin = async (
-        idCategorie
-      ) => {
-        return idCategorie === 'UneCategorie'
-          ? [{ id: '1', nom: 'uneSection' }]
-          : [];
+      cmsCrisp.adaptateurCmsCrisp.recupereSectionsParChemin = async (idCategorie) => {
+        return idCategorie === 'UneCategorie' ? [{ id: '1', nom: 'uneSection' }] : [];
       };
 
       const sections = await cmsCrisp.recupereSectionsParChemin('UneCategorie');
@@ -217,9 +182,7 @@ describe('Le CMS Crisp', () => {
   describe("sur demande des articles d'une catégorie", () => {
     it("délègue à l'adaptateur la récupération des articles", async () => {
       const cmsCrisp = new CmsCrisp('id-site', 'cle-api');
-      cmsCrisp.adaptateurCmsCrisp.recupereArticlesParChemin = async (
-        chemin
-      ) => {
+      cmsCrisp.adaptateurCmsCrisp.recupereArticlesParChemin = async (chemin) => {
         return chemin === 'UneCategorie'
           ? [
               {

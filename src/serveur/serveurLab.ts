@@ -6,8 +6,7 @@ import { fabriqueCleRateLimit } from './clefRateLimit';
 const creeServeurLab = (config: ConfigurationServeurLab): Express => {
   const express = require('express');
   const app = express();
-  const nombreProxiesDeConfiance =
-    typeof config.reseau.trustProxy === 'number' ? config.reseau.trustProxy : 0;
+  const nombreProxiesDeConfiance = typeof config.reseau.trustProxy === 'number' ? config.reseau.trustProxy : 0;
 
   const limiteRequetesParMinute = rateLimit({
     windowMs: 60 * 1000,
@@ -63,8 +62,7 @@ const configurationServeurLabEnvironnement = (): ConfigurationServeurLab => {
     reseau: {
       trustProxy: trustProxy(),
       maxRequetesParMinute: maxRequetesParMinute(),
-      ipAutorisees:
-        process.env.SERVEUR_ADRESSES_IP_AUTORISEES?.split(',') ?? false,
+      ipAutorisees: process.env.SERVEUR_ADRESSES_IP_AUTORISEES?.split(',') ?? false,
     },
   };
 };
@@ -73,9 +71,7 @@ const trustProxy = () => {
   const trustProxyEnChaine = process.env.SERVEUR_TRUST_PROXY || '0';
   const trustProxyEnNombre = Number(trustProxyEnChaine);
   if (isNaN(trustProxyEnNombre)) {
-    console.warn(
-      `Attention ! SERVEUR_TRUST_PROXY positionné à ${trustProxyEnChaine}`
-    );
+    console.warn(`Attention ! SERVEUR_TRUST_PROXY positionné à ${trustProxyEnChaine}`);
     return trustProxyEnChaine;
   } else {
     return trustProxyEnNombre;
@@ -86,16 +82,10 @@ const maxRequetesParMinute = () => {
   const maxEnChaine = process.env.SERVEUR_MAX_REQUETES_PAR_MINUTE || '600';
   const maxEnNombre = Number(maxEnChaine);
   if (isNaN(maxEnNombre)) {
-    throw new Error(
-      `SERVEUR_MAX_REQUETES_PAR_MINUTE n'est pas un nombre : ${maxEnChaine}`
-    );
+    throw new Error(`SERVEUR_MAX_REQUETES_PAR_MINUTE n'est pas un nombre : ${maxEnChaine}`);
   } else {
     return maxEnNombre;
   }
 };
 
-export {
-  configurationServeurLabEnvironnement,
-  creeServeurLab,
-  ConfigurationServeurLab,
-};
+export { configurationServeurLabEnvironnement, creeServeurLab, ConfigurationServeurLab };

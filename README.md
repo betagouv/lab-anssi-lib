@@ -1,4 +1,5 @@
 # lab-anssi-lib
+
 Une librairie de code mutualisé pour les produits du Lab. Innovation de l'ANSSI
 
 ## serveur
@@ -10,7 +11,9 @@ Pour l'utiliser, remplacez votre code de la forme :
 
 ```javascript
 const app = express();
-app.get('/', (req, res) => {res.json({})});
+app.get('/', (req, res) => {
+  res.json({});
+});
 ```
 
 Par un code de la forme :
@@ -23,7 +26,9 @@ const app = creeServeurLab({
     maxRequetesParMinute: 500,
   },
 });
-app.get('/', (req, res) => {res.json({})});
+app.get('/', (req, res) => {
+  res.json({});
+});
 ```
 
 La configuration serveur peut-être construite automatiquement à partir des variables d'environnement :
@@ -31,7 +36,9 @@ La configuration serveur peut-être construite automatiquement à partir des var
 ```javascript
 const config = configurationServeurLabEnvironnement();
 const app = creeServeurLab(config);
-app.get('/', (req, res) => {res.json({})});
+app.get('/', (req, res) => {
+  res.json({});
+});
 ```
 
 Dans ce cas, vous devez positionner des variables d'environnement de la forme :
