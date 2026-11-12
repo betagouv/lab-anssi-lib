@@ -7,3 +7,5 @@ minimumReleaseAgeExclude:
   - axios@1.20.0
   # Renovate security update: qs@6.16.0
   - qs@6.16.0
+  # Renovate security update: sanitize-html@2.18.0
+  - sanitize-html@2.18.0
