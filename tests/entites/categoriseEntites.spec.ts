@@ -4,219 +4,219 @@ import { tailleEntite, typeEntite } from '../../src/entites/categoriseEntite';
 
 const entites = {
   communeDeLyon: {
-    nature_juridique: '7210',
-    categorie_entreprise: 'GE',
-    tranche_effectif_salarie: '53',
+    natureJuridique: '7210',
+    categorieEntreprise: 'GE',
+    trancheEffectifSalarie: '53',
     finances: null,
     complements: {
-      collectivite_territoriale: { code: '69123', niveau: 'Commune' },
-      est_association: false,
-      identifiant_association: null,
-      est_administration: true,
+      collectiviteTerritoriale: { code: '69123', niveau: 'Commune' },
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: true,
     },
   },
   regionIleDeFrance: {
-    nature_juridique: '7230',
-    categorie_entreprise: 'GE',
-    tranche_effectif_salarie: '53',
+    natureJuridique: '7230',
+    categorieEntreprise: 'GE',
+    trancheEffectifSalarie: '53',
     finances: null,
     complements: {
-      collectivite_territoriale: { code: '11', niveau: 'Région' },
-      est_association: false,
-      identifiant_association: null,
-      est_administration: true,
+      collectiviteTerritoriale: { code: '11', niveau: 'Région' },
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: true,
     },
   },
   collectiviteDeSaintMartin: {
-    nature_juridique: '7225',
-    categorie_entreprise: 'PME',
-    tranche_effectif_salarie: 'NN',
+    natureJuridique: '7225',
+    categorieEntreprise: 'PME',
+    trancheEffectifSalarie: 'NN',
     finances: null,
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: true,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: true,
     },
   },
   anssi: {
-    nature_juridique: '7160',
-    categorie_entreprise: 'ETI',
-    tranche_effectif_salarie: '41',
+    natureJuridique: '7160',
+    categorieEntreprise: 'ETI',
+    trancheEffectifSalarie: '41',
     finances: null,
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: true,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: true,
     },
   },
   ministereDeLInterieur: {
-    nature_juridique: '7113',
-    categorie_entreprise: 'ETI',
-    tranche_effectif_salarie: '51',
+    natureJuridique: '7113',
+    categorieEntreprise: 'ETI',
+    trancheEffectifSalarie: '51',
     finances: null,
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: true,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: true,
     },
   },
   ugap: {
-    nature_juridique: '4110',
-    categorie_entreprise: 'GE',
-    tranche_effectif_salarie: '42',
+    natureJuridique: '4110',
+    categorieEntreprise: 'GE',
+    trancheEffectifSalarie: '42',
     finances: null,
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: true,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: true,
     },
   },
   restosDuCoeur: {
-    nature_juridique: '9230',
-    categorie_entreprise: 'PME',
-    tranche_effectif_salarie: '31',
+    natureJuridique: '9230',
+    categorieEntreprise: 'PME',
+    trancheEffectifSalarie: '31',
     finances: null,
     complements: {
-      collectivite_territoriale: null,
-      est_association: true,
-      identifiant_association: 'W751074179',
-      est_administration: false,
+      collectiviteTerritoriale: null,
+      estAssociation: true,
+      identifiantAssociation: 'W751074179',
+      estAdministration: false,
     },
   },
   associationFranceJapon: {
-    nature_juridique: '9210',
-    categorie_entreprise: null,
-    tranche_effectif_salarie: 'NN',
+    natureJuridique: '9210',
+    categorieEntreprise: null,
+    trancheEffectifSalarie: 'NN',
     finances: null,
     complements: {
-      collectivite_territoriale: null,
-      est_association: true,
-      identifiant_association: null,
-      est_administration: false,
+      collectiviteTerritoriale: null,
+      estAssociation: true,
+      identifiantAssociation: null,
+      estAdministration: false,
     },
   },
   croixRougeFrancaise: {
-    nature_juridique: '9230',
-    categorie_entreprise: 'GE',
-    tranche_effectif_salarie: '53',
+    natureJuridique: '9230',
+    categorieEntreprise: 'GE',
+    trancheEffectifSalarie: '53',
     finances: null,
     complements: {
-      collectivite_territoriale: null,
-      est_association: true,
-      identifiant_association: 'W751004076',
-      est_administration: false,
+      collectiviteTerritoriale: null,
+      estAssociation: true,
+      identifiantAssociation: 'W751004076',
+      estAdministration: false,
     },
   },
   orange: {
-    nature_juridique: '5599',
-    categorie_entreprise: 'GE',
-    tranche_effectif_salarie: '53',
-    finances: { '2025': { ca: 40396000000, resultat_net: 1139000000 } },
+    natureJuridique: '5599',
+    categorieEntreprise: 'GE',
+    trancheEffectifSalarie: '53',
+    finances: { '2025': { ca: 40396000000, resultatNet: 1139000000 } },
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: false,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: false,
     },
   },
   decathlonFrance: {
-    nature_juridique: '5710',
-    categorie_entreprise: 'GE',
-    tranche_effectif_salarie: '53',
-    finances: { '2025': { ca: 3944371232, resultat_net: 63215297 } },
+    natureJuridique: '5710',
+    categorieEntreprise: 'GE',
+    trancheEffectifSalarie: '53',
+    finances: { '2025': { ca: 3944371232, resultatNet: 63215297 } },
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: false,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: false,
     },
   },
   decathlonOutdoor: {
-    nature_juridique: '5710',
-    categorie_entreprise: 'GE',
-    tranche_effectif_salarie: '12',
-    finances: { '2025': { ca: 269238, resultat_net: -10161420 } },
+    natureJuridique: '5710',
+    categorieEntreprise: 'GE',
+    trancheEffectifSalarie: '12',
+    finances: { '2025': { ca: 269238, resultatNet: -10161420 } },
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: false,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: false,
     },
   },
   boulangerieDuQuartier: {
-    nature_juridique: '5710',
-    categorie_entreprise: 'PME',
-    tranche_effectif_salarie: '03',
-    finances: { '2021': { ca: 295856, resultat_net: 4637 } },
+    natureJuridique: '5710',
+    categorieEntreprise: 'PME',
+    trancheEffectifSalarie: '03',
+    finances: { '2021': { ca: 295856, resultatNet: 4637 } },
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: false,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: false,
     },
   },
   boulangerieValentino: {
-    nature_juridique: '5710',
-    categorie_entreprise: 'PME',
-    tranche_effectif_salarie: '03',
+    natureJuridique: '5710',
+    categorieEntreprise: 'PME',
+    trancheEffectifSalarie: '03',
     finances: null,
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: false,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: false,
     },
   },
   rainbowHolding: {
-    nature_juridique: '5710',
-    categorie_entreprise: 'PME',
-    tranche_effectif_salarie: '03',
-    finances: { '2024': { ca: 90208000, resultat_net: -27695000 } },
+    natureJuridique: '5710',
+    categorieEntreprise: 'PME',
+    trancheEffectifSalarie: '03',
+    finances: { '2024': { ca: 90208000, resultatNet: -27695000 } },
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: false,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: false,
     },
   },
   ordisysInformatique: {
-    nature_juridique: '5499',
-    categorie_entreprise: 'PME',
-    tranche_effectif_salarie: '12',
-    finances: { '2024': { ca: 5788474, resultat_net: 121350 } },
+    natureJuridique: '5499',
+    categorieEntreprise: 'PME',
+    trancheEffectifSalarie: '12',
+    finances: { '2024': { ca: 5788474, resultatNet: 121350 } },
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: false,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: false,
     },
   },
   sasBellegrave: {
-    nature_juridique: '5710',
-    categorie_entreprise: null,
-    tranche_effectif_salarie: '03',
-    finances: { '2024': { ca: 0, resultat_net: 4390 } },
+    natureJuridique: '5710',
+    categorieEntreprise: null,
+    trancheEffectifSalarie: '03',
+    finances: { '2024': { ca: 0, resultatNet: 4390 } },
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: false,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: false,
     },
   },
   genesDiffusion: {
-    nature_juridique: '5710',
-    categorie_entreprise: null,
-    tranche_effectif_salarie: '22',
-    finances: { '2024': { ca: 38845333, resultat_net: 1005789 } },
+    natureJuridique: '5710',
+    categorieEntreprise: null,
+    trancheEffectifSalarie: '22',
+    finances: { '2024': { ca: 38845333, resultatNet: 1005789 } },
     complements: {
-      collectivite_territoriale: null,
-      est_association: false,
-      identifiant_association: null,
-      est_administration: false,
+      collectiviteTerritoriale: null,
+      estAssociation: false,
+      identifiantAssociation: null,
+      estAdministration: false,
     },
   },
 } as const satisfies Record<string, Parameters<typeof typeEntite>[0]>;
@@ -268,8 +268,8 @@ describe('La catégorisation des entités', () => {
     it('reconnaît une association par son seul identifiant RNA', () => {
       const avecIdentifiantSeul = {
         ...entites.restosDuCoeur,
-        nature_juridique: null,
-        complements: { ...entites.restosDuCoeur.complements, est_association: false },
+        natureJuridique: null,
+        complements: { ...entites.restosDuCoeur.complements, estAssociation: false },
       };
 
       assert.equal(typeEntite(avecIdentifiantSeul), 'association');
@@ -284,7 +284,7 @@ describe('La catégorisation des entités', () => {
     });
 
     it('considère par défaut une entité sans nature juridique ni compléments comme une entreprise', () => {
-      const entiteVide = { ...entites.orange, nature_juridique: null, complements: undefined };
+      const entiteVide = { ...entites.orange, natureJuridique: null, complements: undefined };
 
       assert.equal(typeEntite(entiteVide), 'entreprise');
     });
@@ -329,7 +329,7 @@ describe('La catégorisation des entités', () => {
       it('retourne TPE pour un CA de exactement 2 M€', () => {
         const caAuPlafond = {
           ...entites.boulangerieDuQuartier,
-          finances: { '2021': { ca: 2_000_000, resultat_net: 4637 } },
+          finances: { '2021': { ca: 2_000_000, resultatNet: 4637 } },
         };
 
         assert.equal(tailleEntite(caAuPlafond), 'TPE');
@@ -339,8 +339,8 @@ describe('La catégorisation des entités', () => {
         const plusieursExercices = {
           ...entites.rainbowHolding,
           finances: {
-            '2024': { ca: 90208000, resultat_net: -27695000 },
-            '2019': { ca: 150000, resultat_net: 1000 },
+            '2024': { ca: 90208000, resultatNet: -27695000 },
+            '2019': { ca: 150000, resultatNet: 1000 },
           },
         };
 
@@ -348,7 +348,7 @@ describe('La catégorisation des entités', () => {
       });
 
       it("retourne PME quand l'effectif n'est pas connu", () => {
-        const sansEffectif = { ...entites.boulangerieValentino, tranche_effectif_salarie: null };
+        const sansEffectif = { ...entites.boulangerieValentino, trancheEffectifSalarie: null };
 
         assert.equal(tailleEntite(sansEffectif), 'PME');
       });
@@ -364,13 +364,13 @@ describe('La catégorisation des entités', () => {
       });
 
       it('estime ETI entre 250 et 4 999 salariés', () => {
-        const sansCategorie = { ...entites.anssi, categorie_entreprise: null };
+        const sansCategorie = { ...entites.anssi, categorieEntreprise: null };
 
         assert.equal(tailleEntite(sansCategorie), 'ETI');
       });
 
       it('estime GE à partir de 5 000 salariés', () => {
-        const sansCategorie = { ...entites.decathlonFrance, categorie_entreprise: null };
+        const sansCategorie = { ...entites.decathlonFrance, categorieEntreprise: null };
 
         assert.equal(tailleEntite(sansCategorie), 'GE');
       });
@@ -380,7 +380,7 @@ describe('La catégorisation des entités', () => {
       });
 
       it("retourne null quand l'effectif n'est pas connu", () => {
-        const sansEffectif = { ...entites.genesDiffusion, tranche_effectif_salarie: null };
+        const sansEffectif = { ...entites.genesDiffusion, trancheEffectifSalarie: null };
 
         assert.equal(tailleEntite(sansEffectif), null);
       });
