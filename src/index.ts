@@ -18,3 +18,4 @@ export {
 } from './serveur/serveurLab';
 
 export { Telephone } from './telephone';
+export { tailleEntite, typeEntite } from './entites/categoriseEntite';
