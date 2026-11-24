@@ -2,20 +2,20 @@ export type TypeStructure = 'collectivite' | 'servicePublic' | 'association' | '
 
 export type Taille = 'TPE' | 'PME' | 'ETI' | 'GE';
 
-type Finances = Record<string, { ca: number | null; resultat_net: number | null }>;
-
 type Entite = {
-  nature_juridique: string | null;
-  categorie_entreprise: 'PME' | 'ETI' | 'GE' | null;
-  tranche_effectif_salarie: string | null;
-  finances?: Record<string, { ca: number | null; resultat_net: number | null }> | null;
+  natureJuridique: string | null;
+  categorieEntreprise: 'PME' | 'ETI' | 'GE' | null;
+  trancheEffectifSalarie: string | null;
+  finances?: Record<string, { ca: number | null; resultatNet: number | null }> | null;
   complements?: {
-    collectivite_territoriale?: { code: string; niveau: string } | null;
-    est_association?: boolean | null;
-    identifiant_association?: string | null;
-    est_administration?: boolean | null;
+    collectiviteTerritoriale?: { code: string; niveau: string } | null;
+    estAssociation?: boolean | null;
+    identifiantAssociation?: string | null;
+    estAdministration?: boolean | null;
   } | null;
 };
+
+type Finances = Entite['finances'];
 
 const EFFECTIF_MAX_PAR_TRANCHE = {
   NN: 0,
@@ -52,21 +52,21 @@ const dernierCa = (finances: Finances | null): number | null => {
 
 export const typeEntite = (entite: Entite): TypeStructure => {
   const complements = entite.complements ?? {};
-  const natureJuridique = entite.nature_juridique ?? '';
+  const natureJuridique = entite.natureJuridique ?? '';
 
-  if (complements.collectivite_territoriale || natureJuridique.startsWith('72')) return 'collectivite';
+  if (complements.collectiviteTerritoriale || natureJuridique.startsWith('72')) return 'collectivite';
 
-  if (complements.est_administration) return 'servicePublic';
+  if (complements.estAdministration) return 'servicePublic';
 
-  if (complements.est_association || complements.identifiant_association || natureJuridique.startsWith('92'))
+  if (complements.estAssociation || complements.identifiantAssociation || natureJuridique.startsWith('92'))
     return 'association';
 
   return 'entreprise';
 };
 
 export function tailleEntite(entite: Entite): Taille | null {
-  const effectif = effectifMax(entite.tranche_effectif_salarie as TrancheEffecticSalarie | null);
-  const categorie = entite.categorie_entreprise;
+  const effectif = effectifMax(entite.trancheEffectifSalarie as TrancheEffecticSalarie | null);
+  const categorie = entite.categorieEntreprise;
 
   if (categorie === 'GE' || categorie === 'ETI') return categorie;
 
